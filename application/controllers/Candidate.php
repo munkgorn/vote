@@ -364,7 +364,8 @@ class Candidate extends CI_Controller {
 				foreach ($insert as $in) {
 					$result = $this->ModelScore->add($in);
 				}
-				$this->session->set_userdata('success', 'ลงคะแนนเรียบร้อยแล้ว');
+				$name = $member->prefix_name.' '.$member->firstname.' '.$member->lastname;
+				$this->session->set_userdata('success', $name.' ได้ลงคะแนนเรียบร้อยแล้ว');
 			} else {
 				$this->session->set_userdata('error', 'กรุณาเลือกผู้สมัครเพื่อลงคะแนน');
 			}
@@ -381,7 +382,8 @@ class Candidate extends CI_Controller {
 					$result = $this->ModelScore->add($in);
 				}
 			}
-			redirect('Candidate/Vote/'.$id);
+			// redirect('Candidate/Vote/'.$id);
+			redirect('member/logout');
 			exit();
 		}
 

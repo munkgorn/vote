@@ -28,6 +28,9 @@ class Member extends CI_Controller {
 		$data['base_url'] = base_url();
 		$data['error'] = '';
 
+		$data['success'] = $this->session->has_userdata('success') ? $this->session->success : ''; $this->session->unset_userdata('success');
+		$data['error'] = $this->session->has_userdata('error') ? $this->session->error : ''; $this->session->unset_userdata('error');
+
 		if ($this->input->server('REQUEST_METHOD')=='POST') {
 			$this->load->model('ModelMember');
 			$this->load->model('ModelPermission');
@@ -42,6 +45,7 @@ class Member extends CI_Controller {
 				foreach ($permiss as $value) {
 					$permission[] = $value->permission_key;
 				}
+				$this->session->sess_expiration = 5;
 				$this->session->set_userdata('permission', $permission);
 				$this->session->set_userdata('token', base64_encode(json_encode($member)));
 				

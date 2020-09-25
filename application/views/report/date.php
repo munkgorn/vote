@@ -28,17 +28,17 @@
                 <div class="card">
                     <div class="card-body">
                         <form action="<?php echo $action; ?>" method="post">
-                        <div class="row">
-                            <div class="col-10">
-                                <div class="form-group row">
-                                    <label for="staticEmail" class="col-sm-3 col-form-label">วันที่ลงคะแนน</label>
-                                    <div class="col-sm-9">
-                                        <input class="form-control" name="date" type="text" id="datescore" autocomplete="off">
+                            <div class="row">
+                                <div class="col-10">
+                                    <div class="form-group row">
+                                        <label for="staticEmail" class="col-sm-3 col-form-label">วันที่ลงคะแนน</label>
+                                        <div class="col-sm-9">
+                                            <input class="form-control" name="date" type="text" id="datescore" autocomplete="off">
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="col-2 text-right"><button type="submit" class="btn btn-info">ค้นหา</button></div>
                             </div>
-                            <div class="col-2 text-right"><button type="submit" class="btn btn-info">ค้นหา</button></div>
-                        </div>
                         </form>
                     </div>
                 </div>
@@ -71,13 +71,19 @@
                                         <th class="text-left" width="20%">จำนวนผู้มาลงคะแนนคิดเป็นร้อยละ</th>
                                     </tr>
                                 </thead>
-                                <tbody> 
-                                    <?php foreach ($member_groups as $member_group) { ?>
+                                <tbody>
+                                    <?php 
+                                    $t_all = 0; $t_use = 0; $t_notuse = 0;
+                                    foreach ($member_groups as $member_group) { 
+                                        $t_all += (int)$member_group['all'];
+                                        $t_use += (int)$member_group['memberuse'];
+                                        $t_notuse += (int)$member_group['membernotuse'];
+                                    ?>
                                     <tr>
                                         <td><?php echo $member_group['name']; ?></td>
-                                        <td class="text-center"><?php echo $member_group['all']; ?></td>
-                                        <td class="text-center"><?php echo $member_group['memberuse']; ?></td>
-                                        <td class="text-center"><?php echo $member_group['membernotuse']; ?></td>
+                                        <td class="text-center"><?php echo number_format($member_group['all'],0); ?></td>
+                                        <td class="text-center"><?php echo number_format($member_group['memberuse'],0); ?></td>
+                                        <td class="text-center"><?php echo number_format($member_group['membernotuse'],0); ?></td>
                                         <td class="text-center"><?php echo $member_group['percent']; ?></td>
                                     </tr>
                                     <?php } ?>
@@ -92,6 +98,9 @@
                                     </tr>
                                 </tfoot>
                             </table>
+                            <p class="mb-0">จำนวนผู้มีสิทธิทั้งหมด <?php echo number_format($t_all, 0);?> คน</p>
+                            <p class="mb-0">จำนวนผู้มาลงคะแนน <?php echo number_format($t_use, 0);?> คน</p>
+                            <p class="mb-0">จำนวนผู้ไม่มาลงคะแนน <?php echo number_format($t_notuse, 0);?> คน</p>
                         </div>
 
                     </div>
@@ -109,7 +118,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.1/css/buttons.dataTables.min.css">
 <script>
 jQuery(document).ready(function($) {
-    
+
     $.fn.datepicker.dates['th'] = {
         days: ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤ", "ศุกร์", "เสาร์"],
         daysShort: ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"],
@@ -119,7 +128,8 @@ jQuery(document).ready(function($) {
         today: "วันนี้",
         clear: "ล้าง",
         format: "dd-mm-yyyy",
-        titleFormat: "MM yyyy", /* Leverages same syntax as 'format' */
+        titleFormat: "MM yyyy",
+        /* Leverages same syntax as 'format' */
         weekStart: 0
     };
 
@@ -132,18 +142,17 @@ jQuery(document).ready(function($) {
     });
 
     <?php if ($date) { ?>
-    $('#datescore').datepicker('setDate', '<?php echo $date;?>');
+        $('#datescore').datepicker('setDate', '<?php echo $date;?>'); 
     <?php } ?>
 
 
     $('#zero_config').dataTable({
-        destroy: true, 
+        destroy: true,
         dom: 'Bfrtip',
         buttons: [
             'print'
         ],
-        columnDefs: [
-        ]
+        columnDefs: []
     });
 });
 </script>

@@ -462,6 +462,7 @@ class ModelRecruiting extends CI_Model {
 		
 		$this->db->where('recruiting.del', 0);
 		$query = $this->db->get('recruiting');
+		// echo $this->db->last_query();
 		return $query->result_array();
 	}
 

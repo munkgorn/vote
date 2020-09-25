@@ -15,7 +15,7 @@ class Report extends CI_Controller {
 		$this->checkPermission('S14_REPORT');
     	$data = array();
 		$data['base_url'] = base_url();
-		$data['heading_title'] = 'รายงานำแยกตามวาระ';
+		$data['heading_title'] = 'รายงานแยกตามวาระ';
 		$data['breadcrumbs'] = array(
 			// array('name'=>'หน้าหลัก','link'=>base_url('home')),
 			array('name'=>'รายงานแยกตามวาระ','link'=>base_url('report')),
@@ -342,9 +342,9 @@ class Report extends CI_Controller {
 
 				$data['member_groups'][] = array(
 					'name'           => $member->name,
-					'all'            => number_format(count($memberall),0),
-					'memberuse'      => number_format($memberuse,0),
-					'membernotuse'   => number_format((count($memberall)-$memberuse),0),
+					'all'            => count($memberall),
+					'memberuse'      => $memberuse,
+					'membernotuse'   => (count($memberall)-$memberuse),
 					'percent'        => number_format($percent,2).'%',
 					'voteno'         => number_format($voteno,0),
 					'percent_voteno' => number_format($percent_voteno,2).'%',
@@ -369,10 +369,10 @@ class Report extends CI_Controller {
 
     	$data = array();
 		$data['base_url'] = base_url();
-		$data['heading_title'] = 'รายงานแยกตามวันที่';
+		$data['heading_title'] = 'รายงานแยกตามประเภท';
 		$data['breadcrumbs'] = array(
 			// array('name'=>'หน้าหลัก','link'=>base_url('home')),
-			array('name'=>'รายงานแยกตามวันที่','link'=>base_url('report/date')),
+			array('name'=>'รายงานแยกตามประเภท','link'=>base_url('report/type')),
 		);
 
 		$this->load->model('ModelMember');
@@ -391,11 +391,10 @@ class Report extends CI_Controller {
 		$data['recruitings'] = array();
 		$data['member_group_id'] = 0;
 		if ($this->input->server('REQUEST_METHOD') == 'POST') {
-			$data['member_group_id'] = $this->input->post('member_group_id');
+			$data['member_group_id'] = $this->input->post('member_group_id'); 
 			$recruitings_info = $this->ModelRecruiting->getListsWithMemberGroupId($this->input->post('member_group_id'));
 			$filter = array('member_group_id'=>$this->input->post('member_group_id'));
 			$memberall = $this->ModelMember->getLists($filter);
-			$temp = array();
 			foreach ($recruitings_info as $recruiting) {
 				$filter = array();
 				$memberuse = $this->ModelScore->countMembergroup($this->input->post('member_group_id'), $filter);

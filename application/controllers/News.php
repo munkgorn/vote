@@ -34,7 +34,7 @@ class News extends CI_Controller {
 				'no'        => ++$key,
 				'name'      => $list->name,
 				'type_name' => $list->type_name,
-				'priority'  => $priority[$list->priority],
+				'priority'  => !empty($priority[$list->priority]) ? $priority[$list->priority] : '',
 				'date_show' => $list->date_show,
 				'date_end'  => $list->date_end
 			);

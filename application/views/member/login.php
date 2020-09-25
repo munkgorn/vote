@@ -8,19 +8,19 @@
         <div class="row pt-5">
             <div class="col-md-6">
                 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                  <div class="carousel-inner">
-                    <?php foreach ($lists as $key => $value) { ?>
-                    <?php if ($value['showtime']==true) { ?>
-                    <div class="carousel-item <?php if($key == '0'){ echo "active"; } ?>">
-                      <img class="d-block w-100" src="<?php echo $value['file']; ?>" alt="First slide">
-                        <div class="text-white pt-5 text-justify">
-                            <small><?php echo $value['type_name']; ?></small>
-                            <h4><?php echo $value['name']; ?></h4>
+                    <div class="carousel-inner">
+                        <?php foreach ($lists as $key => $value) { ?>
+                        <?php if ($value['showtime']==true) { ?>
+                        <div class="carousel-item <?php if($key == '0'){ echo "active"; } ?>">
+                            <img class="d-block w-100" src="<?php echo $value['file']; ?>" alt="First slide">
+                            <div class="text-white pt-5 text-justify">
+                                <small><?php echo $value['type_name']; ?></small>
+                                <h4><?php echo $value['name']; ?></h4>
+                            </div>
                         </div>
-                    </div>
-                    <?php } ?>
-                    <?php } ?>
-                    <!-- <div class="carousel-item">
+                        <?php } ?>
+                        <?php } ?>
+                        <!-- <div class="carousel-item">
                       <img class="d-block w-100" src="https://via.placeholder.com/1920x1080" alt="Second slide">
                       <div class="text-white pt-5 text-justify">
                             Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
@@ -42,7 +42,7 @@
                             proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                         </div>
                     </div> -->
-                  </div>
+                    </div>
                 </div>
             </div>
             <div class="col-md-5 offset-1">
@@ -57,6 +57,13 @@
                             <p class="text-white">สหกรณ์ออมทรัพย์กรมส่งเสริมการเกษตร จำกัด</p>
                         </div>
                     </div>
+
+                    <?php if (isset($success)&&!empty($success)) : ?>
+                    <div class="alert alert-success" role="alert"><?php echo $success;?></div>
+                    <?php endif; ?>
+                    <?php if (isset($error)&&!empty($error)) : ?>
+                    <div class="alert alert-danger" role="alert"><?php echo $error;?></div>
+                    <?php endif; ?>
                     <div id="loginform">
                         <form class="form-horizontal m-t-20" id="loginform" action="<?php echo $action;?>" method="post">
                             <div class="row p-b-30 mb-2">
@@ -104,7 +111,7 @@
             </div>
         </div>
     </div>
-   <!--  <div class="auth-wrapper d-flex no-block justify-content-center align-items-center bg-dark">
+    <!--  <div class="auth-wrapper d-flex no-block justify-content-center align-items-center bg-dark">
         <div class="auth-box bg-dark">
             <div class="row">
                 <div class="col-3 text-center">
@@ -170,13 +177,20 @@
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
-    <?php if (isset($error)&&!empty($error)) { ?>
-    toastr.warning('<?php echo $error;?>', 'WRONG!');
-    <?php } ?>
+    <
+    ?
+    php
+    if (isset($error) && !empty($error)) {
+        ?
+        >
+        toastr.warning('<?php echo $error;?>', 'WRONG!'); <
+        ?
+        php
+    } ? >
 });
 </script>
 <script type="text/javascript">
-    $('.carousel').carousel({
-      interval: 3000
-    })
+$('.carousel').carousel({
+    interval: 3000
+})
 </script>
