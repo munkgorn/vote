@@ -443,7 +443,96 @@ class Report extends CI_Controller {
 		$this->load->view('common/menu', $data);
 		$this->load->view('report/type', $data); 
 		$this->load->view('common/footer', $data);
-    }
+	}
+	
+	public function time() {
+		$this->checkPermission('S13_REPORT');
+		$this->checkPermission('S15_REPORT');
+
+    	$data = array();
+		$data['base_url'] = base_url();
+		$data['heading_title'] = 'รายงานแยกตามเวลา';
+		$data['breadcrumbs'] = array(
+			// array('name'=>'หน้าหลัก','link'=>base_url('home')),
+			array('name'=>'รายงานแยกตามประเภท','link'=>base_url('report/type')),
+		);
+
+		$this->load->model('ModelMember');
+		$this->load->model('ModelRegion');
+		$this->load->model('ModelRecruiting');
+		$this->load->model('ModelScore');
+		$this->load->model('ModelCommittee');
+		
+		$recruiting_id = 0;
+		
+
+		if ($this->input->server('REQUEST_METHOD') == 'POST') {
+			$recruiting_id = $this->input->post('recruiting_id');
+			$recruiting_info = $this->ModelRecruiting->getList($recruiting_id);
+			
+			// $fix = strtotime('2020-10-16 00:00:00');
+			$timestamp_start = strtotime($recruiting_info->date_score_start);
+			// if ($timestamp_start < $fix) {
+			// 	date_default_timezone_set('Europe/Berlin');
+			// } else {
+			// 	date_default_timezone_set('Asia/Bangkok');
+			// }
+
+			$dateScore = date('Y-m-d', $timestamp_start);
+
+			$timeStart = 0;
+			$timeEnd = 23;
+
+			$data['result'] = array();
+
+			$groups = $this->ModelMember->getGroups();
+			foreach ($groups as $group) {
+				$result = array(
+					'group' => $group->name,
+					'times' => array()
+				);
+				$times = array();
+				for ($i=$timeStart; $i<=$timeEnd; $i++) {
+					$hour = sprintf('%02d',$i);
+					$start = "$dateScore $hour:00:00";
+					$end = "$dateScore $hour:59:59";
+					$count = $this->ModelScore->countTimeScore($recruiting_id, $group->id, $start, $end);
+					$times[$i] = $count;
+				}
+				$result['times'] = $times;
+				$data['result'][] = $result;
+			}
+			
+		}
+
+		$data['recruiting_id'] = $recruiting_id;
+
+		$data['recruitings'] = array();
+		$recruitings = $this->ModelRecruiting->getLists();
+		if (count($recruitings)>0) {
+			foreach ($recruitings as $recruiting) {
+				$data['recruitings'][] = array(
+					'type' => $recruiting->recruiting_type,
+					'name' => $recruiting->recruiting_type=='committee' ? 'สรรหาคณะกรรมการดำเนินการ' : 'สรรหาผู้แทนสมาชิก',
+					'id'   => $recruiting->id,
+					'set'  => $recruiting->set,
+					'year' => $recruiting->year,
+					'no'   => $recruiting->no
+				);
+			}
+		}
+		$data['committee'] = $this->ModelCommittee->getLists();
+		
+		$data['action'] = base_url('report/time');
+		$data['date'] = $this->input->get('date');
+
+		date_default_timezone_set('Asia/Bangkok');
+
+		$this->load->view('common/header', $data);
+		$this->load->view('common/menu', $data);
+		$this->load->view('report/time', $data); 
+		$this->load->view('common/footer', $data);
+	}
 
     public function reportScoreWithRangTime()
     {

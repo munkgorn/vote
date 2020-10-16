@@ -86,8 +86,8 @@
         <script type="text/javascript" src="<?php echo $base_url;?>/assets/keepalive.js"></script>
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-59803072-12"></script>
-        <script>
+        <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-59803072-12"></script> -->
+        <!-- <script>
         window.dataLayer = window.dataLayer || [];
 
         function gtag() {
@@ -96,7 +96,7 @@
         gtag('js', new Date());
 
         gtag('config', 'UA-59803072-12');
-        </script>
+        </script> -->
 
     </head>
 

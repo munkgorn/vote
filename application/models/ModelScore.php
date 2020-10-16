@@ -142,4 +142,11 @@ class ModelScore extends CI_Model {
 		
 		return $result;
 	}
+
+	
+	public function countTimeScore($recruiting_id, $member_group_id, $start, $end) {
+		$sql = "select count(s.id) as countvote from vote_score s LEFT JOIN vote_member m ON m.id=s.member_id LEFT JOIN vote_member_group mg ON mg.id=m.member_group_id where s.recruiting_id = $recruiting_id AND s.date_added BETWEEN '$start' AND '$end' AND mg.id = $member_group_id";
+		$query = $this->db->query($sql);
+		return $query->row_object()->countvote;
+	}
 }

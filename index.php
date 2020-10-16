@@ -1,5 +1,7 @@
 <?php
 ini_set('max_execution_time', 0);
+date_default_timezone_set("Asia/Bangkok");
+
 /**
  * CodeIgniter
  *
@@ -56,7 +58,7 @@ ini_set('max_execution_time', 0);
  */
 	// define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 	//define('ENVIRONMENT','production');
-	define('ENVIRONMENT','development');
+	define('ENVIRONMENT', 'development');
 	
 
 /*

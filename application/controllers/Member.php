@@ -117,8 +117,16 @@ class Member extends CI_Controller {
 					}
 				}
 				// check last vote
+				
+				$json = array(
+					'message' => 'Login',
+					'member' => $member,
+					'date' => date('Y-m-d H:i:s')
+				);
+				$json = json_encode($json);
+				log_message('info', $json);
 
-					redirect('Candidate/vote');
+				redirect('Candidate/vote');
 			} else {
 				$data['error'] = 'ชื่อผู้ใช้งาน หรือ รหัสผ่าน ผิด';
 			}

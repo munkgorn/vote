@@ -155,6 +155,7 @@
                         <li class="sidebar-item"><a href="<?php echo $base_url;?>report/date" class="sidebar-link"><i class="mdi mdi-receipt"></i><span class="hide-menu">ผู้มาลงคะแนนตามวันที่</span></a></li>
                         <?php } ?>
                         <li class="sidebar-item"><a href="<?php echo $base_url;?>report/type" class="sidebar-link"><i class="mdi mdi-receipt"></i><span class="hide-menu">ผู้มาลงคะแนนตามประเภท</span></a></li>
+                        <li class="sidebar-item"><a href="<?php echo $base_url;?>report/time" class="sidebar-link"><i class="mdi mdi-receipt"></i><span class="hide-menu">ผู้มาลงคะแนนตามเวลา</span></a></li>
                     </ul>
                 </li>
                 <?php } ?>
