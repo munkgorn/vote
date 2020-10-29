@@ -99,6 +99,7 @@ class ModelMember extends CI_Model {
 		$this->db->where('member.del', 0);
 		
 		$query = $this->db->get('member');
+		// echo $this->db->last_query();
 		return $query->result();
 	}
 

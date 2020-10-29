@@ -60,6 +60,7 @@
                                         <td><?php echo $recruiting['no']; ?></td>
                                         <td class="text-center">
                                             <button class="btn btn-default" data-toggle="modal" data-id="<?php echo $recruiting['id'];?>" data-target="#Modaltable"><i class="fas fa-table"></i></button>
+                                            <a href="#" target="new" class="btn btn-default"><i class="fas fa-table"></i></a>
                                             <?php if ($recruiting['type']=='member') { ?>
                                             <button class="btn btn-default" data-toggle="modal" data-id="<?php echo $recruiting['id'];?>" data-target="#chart_bar"><i class="fas fa-chart-bar"></i></button>
                                             <button class="btn btn-default" data-toggle="modal" data-id="<?php echo $recruiting['id'];?>" data-target="#chart_pie"><i class="fas fa-chart-pie"></i></button>

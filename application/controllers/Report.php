@@ -64,7 +64,26 @@ class Report extends CI_Controller {
 		$this->load->view('common/menu', $data);
 		$this->load->view('report/index', $data); 
 		$this->load->view('common/footer', $data);
-    }
+	}
+	
+	public function realtime() {
+		$this->checkPermission('S13_REPORT');
+		$this->checkPermission('S14_REPORT');
+    	$data = array();
+		$data['base_url'] = base_url();
+		$data['heading_title'] = 'รายงานแสดงจำนวนผู้มาใช้สิทธิแยกตามกลุ่มของแต่ละวาระ';
+		$data['breadcrumbs'] = array(
+			array('name'=>'รายงานแยกตามวาระ','link'=>base_url('report')),
+			array('name'=>'รายงานแสดงจำนวนผู้มาใช้สิทธิแยกตามกลุ่มของแต่ละวาระ','link'=>base_url('report/realtime'))
+		);
+
+		$data['recruitings'] = array();
+
+		$this->load->view('common/header', $data);
+		$this->load->view('common/menu', $data);
+		$this->load->view('report/index', $data); 
+		$this->load->view('common/footer', $data);
+	}
 
     public function ajaxMember($recruiting_id)
     {
@@ -325,6 +344,7 @@ class Report extends CI_Controller {
 
 		if ($this->input->server('REQUEST_METHOD') == 'POST') {
 			$members = $this->ModelMember->getGroups();
+			$fixdate = strtotime('2020-10-15 00:00:00');
 			foreach ($members as $member) {
 				$filter = array('member.member_group_id'=>$member->id);
 				$memberall = $this->ModelMember->getLists($filter);
@@ -332,7 +352,8 @@ class Report extends CI_Controller {
 				$temp = explode('-', $this->input->post('date'));
 				$date = $temp[2].'-'.$temp[1].'-'.$temp[0];
 
-				$filter = array('date'=>$date);
+
+				$filter = array('date_start'=>$date.' 00:00:00', 'date_end'=>$date.' 23:59:59');
 				$memberuse = $this->ModelScore->countMembergroup($member->id, $filter);
 				$percent = (count($memberall)>0) ? ( ((double)$memberuse/count($memberall)) * 100) : 0;
 
@@ -392,16 +413,29 @@ class Report extends CI_Controller {
 		$data['member_group_id'] = 0;
 		if ($this->input->server('REQUEST_METHOD') == 'POST') {
 			$data['member_group_id'] = $this->input->post('member_group_id'); 
-			$recruitings_info = $this->ModelRecruiting->getListsWithMemberGroupId($this->input->post('member_group_id'));
-			$filter = array('member_group_id'=>$this->input->post('member_group_id'));
+			$member_group_id = !empty($this->input->post('member_group_id')) ? $this->input->post('member_group_id') : null;
+			$recruitings_info = $this->ModelRecruiting->getListsWithMemberGroupId();
+			$filter = array('member.member_group_id'=>$member_group_id);
 			$memberall = $this->ModelMember->getLists($filter);
+			$fixdate = strtotime('2020-10-15 00:00:00');
 			foreach ($recruitings_info as $recruiting) {
-				$filter = array();
-				$memberuse = $this->ModelScore->countMembergroup($this->input->post('member_group_id'), $filter);
+				if (strtotime($recruiting['date_score_start']) < $fixdate) {
+					date_default_timezone_set('Europe/Berlin');
+				}
+				$filter = array(
+					'date_start' => $recruiting['date_score_start'],
+					'date_end' => $recruiting['date_score_end'],
+					'recruiting_id' => $recruiting['id'] 
+				);
+				$memberuse = $this->ModelScore->countMembergroup($member_group_id, $filter);
 				$percent = (count($memberall)>0) ? ( ((double)$memberuse/count($memberall)) * 100) : 0;
 
-				$filter = array();
-				$voteno = $this->ModelScore->countNoVote($this->input->post('member_group_id'), $filter);
+				$filter = array(
+					'date_start' => $recruiting['date_score_start'],
+					'date_end' => $recruiting['date_score_end'],
+					'recruiting_id' => $recruiting['id']
+				);
+				$voteno = $this->ModelScore->countNoVote($member_group_id, $filter);
 				$percent_voteno = (count($memberall)>0) ? ( ((double)$voteno/count($memberall)) * 100) : 0;
 				$data['recruitings'][] = array(
 					'set'            => $recruiting['set'],
@@ -420,6 +454,7 @@ class Report extends CI_Controller {
 			// print_r($recruitings_info);
 			// echo '</pre>';
 		}
+		date_default_timezone_set('Asia/Bangkok');
 		// foreach ($recruitings_info as $recruiting) {
 		// 	if ($recruiting->recruiting_type=='members') {
 

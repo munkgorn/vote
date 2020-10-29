@@ -213,6 +213,7 @@ class Candidate extends CI_Controller {
 					// $bypass_committee = false;
 					$lists_members = $this->ModelRecruiting->getRecruitingMemberGroup($value->id);
 					foreach ($lists_members as $list_member) {
+						// echo $list_member->type_id;
 						if ($member->member_group_id==$list_member->type_id) {
 						$list2[] = $list_member->member_group_name;
 							$list[] = array(
@@ -222,6 +223,7 @@ class Candidate extends CI_Controller {
 						}
 					}
 				}
+
 				// if ($value->recruiting_type == 'committee') {
 				// 	$list = array();
 				// 	$temp = $this->ModelRecruiting->getRecruitingCommittee($value->id);
@@ -275,6 +277,8 @@ class Candidate extends CI_Controller {
 						'type' => $value3->type_id,
 					);
 				}
+
+				
 				$check = 0;
 				// $check += count($candidates);
 				$canvote = true;

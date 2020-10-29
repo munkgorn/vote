@@ -59,10 +59,19 @@ class ModelScore extends CI_Model {
 		if (isset($filter['date'])&&!empty($filter['date'])) {
 			$this->db->where('date_score', $filter['date']);
 		}
+		if (isset($filter['date_start'])&&!empty($filter['date_start'])) {
+			$this->db->where('score.date_added >=', $filter['date_start']);
+		}
+		if (isset($filter['date_end'])&&!empty($filter['date_end'])) {
+			$this->db->where('score.date_added <=', $filter['date_end']);
+		}
 		if (isset($filter['recruiting_id'])) {
 			$this->db->where('score.recruiting_id', $filter['recruiting_id']);
 		}
-		$this->db->where('member.member_group_id', $member_group_id);
+		if (isset($member_group_id)&&!empty($member_group_id)) {
+			$this->db->where('member.member_group_id', $member_group_id);
+		}
+		
 		$this->db->where('score.vote', 0);
 		$this->db->join('member','member.id = score.member_id');
 		$this->db->group_by('score.member_id');
@@ -91,16 +100,28 @@ class ModelScore extends CI_Model {
 		if (isset($filter['date'])&&!empty($filter['date'])) {
 			$this->db->where('score.date_score', $filter['date']);
 		}
+		if (isset($filter['date_start'])&&!empty($filter['date_start'])) {
+			$this->db->where('score.date_added >=', $filter['date_start']);
+		}
+		if (isset($filter['date_end'])&&!empty($filter['date_end'])) {
+			$this->db->where('score.date_added <=', $filter['date_end']);
+		}
 		if (isset($filter['recruiting_id'])) {
 			$this->db->where('score.recruiting_id', $filter['recruiting_id']);
 		}
-		$this->db->where('member.member_group_id', $member_group_id);
-		$this->db->where('score.vote', 1);
+		if (isset($member_group_id)&&!empty($member_group_id)) {
+			$this->db->where('member.member_group_id', $member_group_id);
+		}
+		if (isset($filter['is_vote'])&&$filter['is_vote']==true) {
+			$this->db->where('score.vote', 1);
+		}
+		
 		$this->db->join('member','member.id = score.member_id');
 		$this->db->group_by('score.member_id');
 		$this->db->get('score');
 		
 		// echo $this->db->last_query();
+		// echo '<br>';
 		// exit();
 		return $this->db->affected_rows();
 	}

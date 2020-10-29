@@ -143,9 +143,6 @@ jQuery(document).ready(function($) {
         autoclose: true,
     });
 
-    <?php if ($date) { ?>
-    $('#datescore').datepicker('setDate', '<?php echo $date;?>');
-    <?php } ?>
 
 
     $('#zero_config').dataTable({
