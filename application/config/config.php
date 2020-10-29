@@ -24,6 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 $config['base_url'] = ENVIRONMENT == 'production' ? 'http://sunha.savco-doae.com/'  : 'http://localhost/vote/';
+// $config['base_url'] = 'http://sunha.savco-doae.com/';
 $config['base_document'] = $_SERVER['DOCUMENT_ROOT'].'/';
 
 /*

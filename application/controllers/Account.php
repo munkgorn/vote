@@ -48,4 +48,6 @@ class Account extends CI_Controller {
 		$this->session->unset_userdata('token');
 		redirect('account/login');
 	}
+
+
 }

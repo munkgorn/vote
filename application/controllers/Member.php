@@ -604,6 +604,7 @@ class Member extends CI_Controller {
 					$fileimport = $upload_data['file_name'];
 				}
 			} else {
+				$this->session->set_userdata('error', 'เกิดข้อผิดพลาดในการอัพโหลดไฟล์');
 				echo '<script>alert("File Import Error");</script>';
 			}
 			// upload
@@ -613,6 +614,9 @@ class Member extends CI_Controller {
 				$file = 'uploads/import_member/'.$fileimport;
 				$this->load->model('ModelMember');
 				$result = $this->ModelMember->importCSV($file);
+
+
+				$this->session->set_userdata('success', 'อัพโหลดไฟล์เรียบร้อยแล้ว');
 
 				echo '<script>alert("Import : '.$result.' rows");</script>';
 				// $row = 1;
@@ -645,7 +649,12 @@ class Member extends CI_Controller {
 
 				// }
 
+			} else {
+				$this->session->set_userdata('error', 'เกิดข้อผิดพลาดในการอัพโหลดไฟล์ ไม่พบไฟล์');
+				// echo '<script>alert("Not Found file import");</script>';
 			}
+		} else {
+			$this->session->set_userdata('error', 'ไม่พบ');
 		}
 
 		redirect('member/all');
