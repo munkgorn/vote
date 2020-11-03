@@ -130,7 +130,7 @@ class ModelMember extends CI_Model {
 	public function importCSV($file)
 	{	
 
-        $sql = "LOAD DATA LOCAL INFILE '" . $this->config->item('base_document') . $file . "' INTO TABLE vote_member FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 ROWS (member_no, prefix_name, firstname, lastname, id_card, temp_member_group, temp_member_group_code, password);";
+        $sql = "LOAD DATA LOCAL INFILE '" . $this->config->item('base_document') . $file . "' INTO TABLE vote_member FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 ROWS (member_no, prefix_name, firstname, lastname, id_card, temp_member_group, temp_member_group_code, password, phone);";
         $query = $this->db->query($sql);
 		$result = $this->db->affected_rows();
 
@@ -141,10 +141,9 @@ class ModelMember extends CI_Model {
 			$result_member_group = $query_member_group->row_array(); 
 
 
-
 			$sql = "UPDATE vote_member SET vote_member.member_type_id = 3, ";
 			$sql .= "vote_member.member_group_id = ".$result_member_group['id'].", ";
-			$sql .= "vote_member.`password` = TRIM(REPLACE(REPLACE(REPLACE(REPLACE(`password`,' ',''),'\t',''),'\n',''),'\r','')), ";
+			$sql .= "vote_member.`password` = TRIM(REPLACE(REPLACE(REPLACE(REPLACE(`vote_member`.`temp_member_group`,' ',''),'\t',''),'\n',''),'\r','')), ";
 			$sql .= "vote_member.temp_member_group = null, ";
 			$sql .= "vote_member.`status` = 1, vote_member.date_added = '".date('Y-m-d H:i:s',time())."', vote_member.date_modify = '".date('Y-m-d H:i:s',time())."', vote_member.del = 0 ";
 			$sql .= "WHERE vote_member.member_group_id is null ";
