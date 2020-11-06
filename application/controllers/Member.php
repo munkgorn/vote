@@ -82,7 +82,7 @@ class Member extends CI_Controller
 
                 // $this->session->set_userdata('timeout', $min);
                 $this->session->set_userdata('expire_date', $expire_date);
-                $this->ModelMember->updateLogin($member['id'], date('Y-m-d H:i:s', time()));
+                //$this->ModelMember->updateLogin($member['id'], date('Y-m-d H:i:s', time()));
 
                 // check last vote
                 $token = $this->session->userdata('token');
