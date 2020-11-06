@@ -1,4 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<?php  
+    print_r(date('Y-m-d H:i:s',$_SESSION['__ci_last_regenerate']));
+?>
 <!-- TEST -->
 <div id="main-wrapper">
 <!-- ============================================================== -->
@@ -84,7 +87,7 @@
                         <a class="dropdown-item" href="#">Something else here</a>
                     </div> 
                 </li> -->
-                <li class="nav-item"><a href="" class="nav-link"><i class="ti-alarm-clock"></i> <?php echo date('H:i:s'); ?></a></li>
+                <li class="nav-item"><a href="" class="nav-link"><i class="ti-alarm-clock"></i> <i id="demo"></i></a></li>
                 <li class="nav-item dropdown">
                     <a href="<?php echo $base_url;?>member/logout" class="nav-link"><i class="ti-lock"></i> Logout</a>
                     <!-- <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="<?php echo $base_url;?>assets/theme/lib/assets/images/users/1.jpg" alt="user" class="rounded-circle" width="31"></a>
