@@ -160,7 +160,7 @@ class ModelMember extends CI_Model
             $sql .= "vote_member.`status` = 1, vote_member.date_added = '" . date('Y-m-d H:i:s', time()) . "', vote_member.date_modify = '" . date('Y-m-d H:i:s', time()) . "', vote_member.del = 0 ";
             $sql .= "WHERE vote_member.member_group_id is null ";
 
-            $query = $this->db->query($sql);
+            $query = $this->db->query($sql);  
         }
 
         // $sql = "UPDATE vote_member SET member_type_id = 3, member_group_id = (SELECT vote_member_group.id FROM vote_member_group WHERE vote_member_group.`code` = vote_member.temp_member_group_code LIMIT 0,1), temp_member_group = '', `password` = TRIM(REPLACE(REPLACE(REPLACE(REPLACE(`password`,' ',''),'\t',''),'\n',''),'\r','')), date_register = '".date('Y-m-d',time())."', status = 1, date_added = '".date('Y-m-d H:i:s',time())."', date_modify = '".date('Y-m-d H:i:s',time())."', del = 0 WHERE temp_member_group != ''; ";

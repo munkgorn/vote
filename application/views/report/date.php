@@ -54,7 +54,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-12"> 
                                 <div class="text-center">
                                     <h2>รายงานแสดงจำนวนผู้มาลงคะแนน</h2>
                                 </div>

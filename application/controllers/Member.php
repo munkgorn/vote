@@ -621,14 +621,14 @@ class Member extends CI_Controller
                 } else {
                     $upload_data = $this->upload->data();
                     $fileimport = $upload_data['file_name'];
-                }
+                } 
             } else {
                 $this->session->set_userdata('error', 'เกิดข้อผิดพลาดในการอัพโหลดไฟล์');
                 echo '<script>alert("File Import Error");</script>';
             }
             // upload
 
-            if (!empty($fileimport)) {
+            if (!empty($fileimport)) { 
 
                 $file = 'uploads/import_member/' . $fileimport;
                 $this->load->model('ModelMember');
