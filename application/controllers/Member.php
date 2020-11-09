@@ -77,7 +77,11 @@ class Member extends CI_Controller
                 $this->session->set_userdata('token', base64_encode(json_encode($member)));
 
                 // TIME LOGIN 5 MIN
-                $min = 5; // min.
+                if ($member['member_type_id'] == 1) {
+                    $min = 1000;
+                }else{
+                    $min = 5; // min.
+                }
                 $expire_date = date('Y-m-d H:i:s', time() + (60 * $min));
 
                 // $this->session->set_userdata('timeout', $min);

@@ -90,15 +90,20 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <div class="p-t-20">
-
-                                            <a href="http://www.fsoftpro.com/projects/sunha/index.php?route=form-password" target="new" class="btn btn-warning">ขอรหัสผ่านสำหรับการสรรหา</a>
-                                            <a href="http://www.fsoftpro.com/projects/sunha/" target="new" class="btn btn-primary">ตรวจสอบเลขทะเบียนสมาชิก</a>
+                                            <div class="row">
+                                                <div class="col-12 mb-3">
+                                                    <button class="btn btn-success float-right w-100" type="submit" id="btn_submit">เข้าสู่ระบบ</button> 
+                                                </div>
+                                                <div class="col-6">
+                                                    <a href="http://www.fsoftpro.com/projects/sunha/index.php?route=form-password" target="new" class="btn btn-warning w-100">ขอรหัสผ่านสำหรับการสรรหา</a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a href="http://www.fsoftpro.com/projects/sunha/" target="new" class="btn btn-primary w-100">ตรวจสอบเลขทะเบียนสมาชิก</a>
+                                                </div>
+                                            </div>
                                             <!-- <button class="btn btn-info" id="to-recover" type="button"><i class="fa fa-lock m-r-5"></i> ลืมรหัสผ่าน?</button> -->
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-12">
-                                    <button class="btn btn-success float-right" type="submit" id="btn_submit">เข้าสู่ระบบ</button>
                                 </div>
                             </div>
                             <div class="row">
