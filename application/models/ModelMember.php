@@ -143,25 +143,37 @@ class ModelMember extends CI_Model
     public function importCSV($file)
     {
 
-        $sql = "LOAD DATA LOCAL INFILE '" . $this->config->item('base_document') . $file . "' INTO TABLE vote_member FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 ROWS (member_no, prefix_name, firstname, lastname, id_card, temp_member_group, temp_member_group_code, password, phone);";
+        $sql = "LOAD DATA LOCAL INFILE '" . $this->config->item('base_document') . $file . "' INTO TABLE vote_member FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 ROWS (member_no, prefix_name, firstname, lastname, id_card, temp_member_group, temp_member_group_code, phone);";
         $query = $this->db->query($sql);
         $result = $this->db->affected_rows();
 
-        $query = $this->db->query("SELECT * FROM vote_member WHERE temp_member_group is not null");
-        $results = $query->result();
-        foreach ($results as $value) {
-            $query_member_group = $this->db->query('SELECT id FROM vote_member_group WHERE `code` = LPAD("310", 6, "0") ');
-            $result_member_group = $query_member_group->row_array();
+        $sql = "UPDATE vote_member m ";
+        $sql .= "LEFT JOIN vote_member_group mg ON mg.`code` = LPAD(m.temp_member_group_code, 6, '0') ";
+        $sql .= "SET ";
+        $sql .= "m.member_type_id = 3, ";
+        $sql .= "m.member_group_id = mg.id, ";
+        $sql .= "m.`password` = TRIM(REPLACE(REPLACE(REPLACE(REPLACE(m.`temp_member_group`,' ',''),'\t',''),'\n',''),'\r','')), ";
+        $sql .= "m.status = 1, ";
+        $sql .= "m.date_added = '', ";
+        $sql .= "m.date_modify = '', ";
+        $sql .= "m.del = 0, ";
+        $sql .= "WHERE m.member_group_id is null ";
+        $this->db->query($sql);
 
-            $sql = "UPDATE vote_member SET vote_member.member_type_id = 3, ";
-            $sql .= "vote_member.member_group_id = " . $result_member_group['id'] . ", ";
-            $sql .= "vote_member.`password` = TRIM(REPLACE(REPLACE(REPLACE(REPLACE(`vote_member`.`temp_member_group`,' ',''),'\t',''),'\n',''),'\r','')), ";
-            $sql .= "vote_member.temp_member_group = null, ";
-            $sql .= "vote_member.`status` = 1, vote_member.date_added = '" . date('Y-m-d H:i:s', time()) . "', vote_member.date_modify = '" . date('Y-m-d H:i:s', time()) . "', vote_member.del = 0 ";
-            $sql .= "WHERE vote_member.member_group_id is null ";
 
-            $query = $this->db->query($sql);  
-        }
+        // $query = $this->db->query("SELECT * FROM vote_member WHERE temp_member_group is not null");
+        // $results = $query->result();
+        // foreach ($results as $value) {
+
+            // $sql = "UPDATE vote_member SET vote_member.member_type_id = 3, ";
+            // $sql .= "vote_member.member_group_id = " . $result_member_group['id'] . ", ";
+            // $sql .= "vote_member.`password` = TRIM(REPLACE(REPLACE(REPLACE(REPLACE(`vote_member`.`temp_member_group`,' ',''),'\t',''),'\n',''),'\r','')), ";
+            // $sql .= "vote_member.temp_member_group = null, ";
+            // $sql .= "vote_member.`status` = 1, vote_member.date_added = '" . date('Y-m-d H:i:s', time()) . "', vote_member.date_modify = '" . date('Y-m-d H:i:s', time()) . "', vote_member.del = 0 ";
+            // $sql .= "WHERE vote_member.member_group_id is null "; 
+
+            // $query = $this->db->query($sql);  
+        // }
 
         // $sql = "UPDATE vote_member SET member_type_id = 3, member_group_id = (SELECT vote_member_group.id FROM vote_member_group WHERE vote_member_group.`code` = vote_member.temp_member_group_code LIMIT 0,1), temp_member_group = '', `password` = TRIM(REPLACE(REPLACE(REPLACE(REPLACE(`password`,' ',''),'\t',''),'\n',''),'\r','')), date_register = '".date('Y-m-d',time())."', status = 1, date_added = '".date('Y-m-d H:i:s',time())."', date_modify = '".date('Y-m-d H:i:s',time())."', del = 0 WHERE temp_member_group != ''; ";
 
