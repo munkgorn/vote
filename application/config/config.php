@@ -382,7 +382,7 @@ $config['encryption_key'] = 'vDyHcFBJFtlPycAdwfkJlXMiK5xLXMzF';
  */
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'vote_session';
-$config['sess_expiration'] = 60 * 5;
+// $config['sess_expiration'] = 60 * 5;
 $config['sess_save_path'] = ENVIRONMENT == 'production' ? sys_get_temp_dir() : null;
 $config['sess_match_ip'] = true;
 $config['sess_time_to_update'] = 300;
