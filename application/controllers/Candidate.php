@@ -387,7 +387,13 @@ class Candidate extends CI_Controller {
 				}
 			}
 			// redirect('Candidate/Vote/'.$id);
-			redirect('member/logout');
+
+			$next = $this->checkHasNextVote();
+			if ($next==false) {
+				redirect('member/logout');
+			} else {
+				redirect('Candidate/VoteScore/'.$next);
+			}
 			exit();
 		}
 
@@ -484,7 +490,118 @@ class Candidate extends CI_Controller {
 		$this->load->view('common/menu', $data);
 		$this->load->view('candidate/votescore', $data); 
 		$this->load->view('common/footer', $data);
-    }
+	}
+	
+	public function checkHasNextVote() 
+	{
+		$this->checkLogin();
+		$this->checkPermission('S08_VOTE');
+		$this->load->model('ModelRecruiting');
+		$this->load->model('ModelScore');
+		$this->load->model('ModelCandidate');
+		$recruitings = $this->ModelRecruiting->getLists();
+
+		$token = $this->session->userdata('token');
+		$member = json_decode(base64_decode($token));
+		$data['recruitings'] = array();
+		if (count($recruitings)>0) {
+			$i=1;
+			foreach ($recruitings as $key => $value) {
+				$list = array();
+				$list2 = array();
+				if ($value->recruiting_type=='committee') {
+					$lists_committee = $this->ModelRecruiting->getRecruitingCommittee($value->id);
+					foreach ($lists_committee as $list_committee) {
+						$list2[] = $list_committee->committee_name;
+						$list[] = array(
+							'name' => $list_committee->committee_name,
+							'type_id' => $list_committee->type_id,
+						);
+					}
+				}
+				if ($value->recruiting_type=='members') {
+					// $bypass_committee = false;
+					$lists_members = $this->ModelRecruiting->getRecruitingMemberGroup($value->id);
+					foreach ($lists_members as $list_member) {
+						if ($member->member_group_id==$list_member->type_id) {
+						$list2[] = $list_member->member_group_name;
+							$list[] = array(
+								'name' => $list_member->member_group_name,
+								'type_id' => $list_member->type_id,
+							);
+						}
+					}
+				}
+
+
+				$status = false;
+				$resultScore = $this->ModelScore->findMyScore($value->id, $member->id);
+				if ((int)$resultScore>0) {
+					$status=true;
+				}
+
+				date_default_timezone_set("Asia/Bangkok");
+
+				$outtimevote = false;
+				$timevote = false;
+				if (time()>=strtotime($value->date_score_start)&&time()<=strtotime($value->date_score_end)) {
+					$timevote = true;
+				}
+				else if (time()>=strtotime($value->date_score_end)) {
+					$outtimevote = true;
+				}
+
+				$timevote_text = '';
+				if ($timevote==false) {
+					$timevote_text .=  '<a href="'.base_url().'Candidate/VoteScore/'.$value->id.'" class="btn btn-default btn-sm">ดูรายละเอียด</a><br>';
+					$timevote_text .= 'เวลาลงคะแนน<br>'.date('d/m/Y H:i',strtotime($value->date_score_start)).'น.<br>ถึง<br>'.date('d/m/Y H:i',strtotime($value->date_score_end)).'น.';
+				}
+
+				$candidate_lists = $this->ModelCandidate->getLists($value->id, $member->member_type_id);
+
+				$candidates = array();
+				foreach ($candidate_lists as $value3) {
+					$candidates[] = array(
+						'name'         => $value3->member_prefix.' '.$value3->firstname.' '.$value3->lastname,
+						'image'        => !empty($value3->image) ? base_url().'/uploads/'.$value3->image : '',
+						'candidate_id' => $value3->id,
+						'member_id'    => $value3->member_id,
+						'type' => $value3->type_id,
+					);
+				}
+
+				
+				$check = 0;
+				$canvote = true;
+				// check i can vote?
+				if (count($list)>0 && $timevote == 1 && empty($status)) {
+					$data['recruitings'][] = array(
+						'id'                  => $value->id,
+						'sort'                => $value->sort,
+						'i'                   => $i++,
+						'recruiting_type'     => ($value->recruiting_type == 'committee' ? 'สรรหาคณะกรรมการดำเนินการ' : 'สรรหาผู้แทนสมาชิก'),
+						'lists'               => count($list2) > 0 ? implode(',', $list2) : '',
+						'type_id'             => $list[0]['type_id'],
+						'set'                 => $value->set,
+						'year'                => $value->year,
+						'no'                  => $value->no,
+						'status'              => (bool)$status,
+						'timevote'            => $timevote,
+						'timevote_text'       => $timevote_text,
+						'canvote'             => $canvote,
+						'outtimevote'         => $outtimevote,
+					);
+				}
+			}
+		}
+
+		if (count($data['recruitings']) > 0) {
+			return $data['recruitings'][0]['id'];
+		} else {
+			return false;
+		}
+
+	}
 
 
     public function add($recruiting_id) 

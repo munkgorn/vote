@@ -332,7 +332,6 @@ class Report extends CI_Controller {
 		$data['base_url'] = base_url();
 		$data['heading_title'] = 'รายงานแยกตามวันที่';
 		$data['breadcrumbs'] = array(
-			// array('name'=>'หน้าหลัก','link'=>base_url('home')),
 			array('name'=>'รายงานแยกตามวันที่','link'=>base_url('report/date')),
 		);
 

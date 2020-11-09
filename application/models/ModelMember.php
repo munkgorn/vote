@@ -112,6 +112,7 @@ class ModelMember extends CI_Model
 
         $query = $this->db->get('member');
         // echo $this->db->last_query();
+        // echo '<br>';
         return $query->result();
     }
 
