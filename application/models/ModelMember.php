@@ -156,7 +156,7 @@ class ModelMember extends CI_Model
         $sql .= "m.status = 1, ";
         $sql .= "m.date_added = '', ";
         $sql .= "m.date_modify = '' ";
-        $sql .= "m.del = 0, ";
+        $sql .= "m.del = 0 ";
         $sql .= "WHERE m.member_group_id is not null ";
         $this->db->query($sql);
 
