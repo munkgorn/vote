@@ -158,7 +158,7 @@ class ModelMember extends CI_Model
         $sql .= "m.date_modify = '', ";
         $sql .= "m.del = 0 ";
         $sql .= "WHERE m.temp_member_group_code is not null ";
-        $this->db->query($sql);
+        $this->db->query($sql); 
 
 
         // $query = $this->db->query("SELECT * FROM vote_member WHERE temp_member_group is not null");

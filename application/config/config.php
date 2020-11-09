@@ -23,7 +23,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
  */
-$config['default_folder'] = 'vote/';
+$config['default_folder'] = '';
 $config['base_url'] = ENVIRONMENT == 'production' ? 'http://sunha.savco-doae.com/' : 'http://localhost/' . $config['default_folder'];
 // $config['base_url'] = 'http://sunha.savco-doae.com/';
 $config['base_document'] = $_SERVER['DOCUMENT_ROOT'] . '/' . $config['default_folder'];
