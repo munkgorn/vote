@@ -784,7 +784,9 @@ class Report extends CI_Controller {
 			header('Content-type: application/vnd.ms-excel');
 			header('Content-Disposition: attachment;filename="' . $filename . '"');
 			header('Cache-Control: max-age=0');
-			$objWriter->save('php://output');
+
+			$objWriter->save(str_replace(__FILE__,'uploads/export/' . $filename, __FILE__));
+			// $objWriter->save('php://output');
 		} catch(Exception $e) {
 			echo 'Message: ' .$e->getMessage();
 		}
