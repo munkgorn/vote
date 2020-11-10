@@ -616,6 +616,8 @@ class Report extends CI_Controller {
 
     public function exportExcel($recruiting_id) 
     {
+		set_time_limit(0);
+		ob_start();
 		try {
 			require_once $this->config->item('base_document').'/assets/PHPExcel-1.8/Classes/PHPExcel.php';
 			$objPHPExcel = new PHPExcel();
@@ -781,11 +783,14 @@ class Report extends CI_Controller {
 			$objPHPExcel->setActiveSheetIndex(0);
 			$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
 			$filename = 'Export_'.date('My', time()).'.xlsx';
-			header('Content-type: application/vnd.ms-excel');
-			header('Content-Disposition: attachment;filename="' . $filename . '"');
-			header('Cache-Control: max-age=0');
+			// header('Content-type: application/vnd.ms-excel');
+			// header('Content-Disposition: attachment;filename="' . $filename . '"');
+			// header('Cache-Control: max-age=0');
 
-			$objWriter->save(str_replace(__FILE__,'uploads/export/' . $filename, __FILE__));
+			$objWriter->save($this->config->item('base_document') . 'uploads/export/' . $filename);
+			// redirect('');
+			header('location:uploads/export/'.$filename);
+			exit();
 			// $objWriter->save('php://output');
 		} catch(Exception $e) {
 			echo 'Message: ' .$e->getMessage();
