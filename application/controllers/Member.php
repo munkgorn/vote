@@ -72,7 +72,7 @@ class Member extends CI_Controller
                 foreach ($permiss as $value) {
                     $permission[] = $value->permission_key;
                 }
-                // $this->session->sess_expiration = 5;
+                $this->session->sess_expiration = 0;
                 $this->session->set_userdata('permission', $permission);
                 $this->session->set_userdata('token', base64_encode(json_encode($member)));
 
