@@ -507,7 +507,7 @@ jQuery(document).ready(function($) {
         });
         $('#tableMemberGroup tbody').html('<tr><td colspan="7" class="text-center">กำลังโหลด...</td></tr>');
         
-        setInterval(function(){
+        // setInterval(function(){
             $.ajax({
                 url: '<?php echo $base_url;?>Report/ajaxMember/'+recruitingid,
                 type: 'POST',
@@ -533,7 +533,7 @@ jQuery(document).ready(function($) {
                     }
                 }
             });
-        }, 10000);
+        // }, 10000);
         
     });
     $('#Modaltable').on('hide.bs.modal', function(event) {
