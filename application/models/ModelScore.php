@@ -13,11 +13,11 @@ class ModelScore extends CI_Model {
 	public function getListsVote($recruiting_id) {
 		$this->db->select('score.member_id as member_id');
 		$this->db->join('score', 'score.member_id=member.id');
-		$this->db->where('score.vote', 1);
+		// $this->db->where('score.vote', 1);
 		$this->db->where('score.recruiting_id', $recruiting_id);
 		$this->db->group_by('score.member_id');
 		$query = $this->db->get('member');
-//echo $this->db->last_query();
+// echo $this->db->last_query();
 		return $query->result();
 	}
 	public function getListsVoteNo($recruiting_id) {
@@ -135,7 +135,7 @@ class ModelScore extends CI_Model {
 			$this->db->where('score.recruiting_id', $filter['recruiting_id']);
 		}
 		// $this->db->where('member.member_group_id', $member_group_id);
-		$this->db->where('score.vote', 1);
+		// $this->db->where('score.vote', 1);
 		$this->db->join('member','member.id = score.member_id');
 		$this->db->group_by('score.member_id');
 		$this->db->get('score');

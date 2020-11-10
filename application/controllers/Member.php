@@ -34,7 +34,10 @@ class Member extends CI_Controller
 
         $json = array();
         $json['expire_date'] = $expire_date;
-        $json['timeout'] = $now > $timestamp ? true : false;
+        $json['timeout'] = false;
+        if ($now > $timestamp && $expire_date != null) {
+            $json['timeout'] = true;
+        }
         $json['now'] = $diff_time;
 
         $this->output

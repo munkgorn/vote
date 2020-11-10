@@ -101,8 +101,8 @@ class Report extends CI_Controller {
     		$members = $this->ModelCommittee->getLists();
     		foreach ($members as $member) {
     			if ($member->id == $recruiting[0]->committee_id) {
-					$filter = array('member.member_group_id'=>$member->member_group_id);
-					$memberall = $this->ModelMember->getLists($filter);
+					// $filter = array('member.member_group_id'=>$member->member_group_id);
+					$memberall = $this->ModelMember->getLists();
 
 					
 					$filter = array('recruiting_id'=>$recruiting_id);
@@ -655,16 +655,18 @@ class Report extends CI_Controller {
 			$recruiting_info = $this->ModelRecruiting->getList($recruiting_id);
 
 			if ($recruiting_info->recruiting_type=='committee') {
+
+			
+					
 				$recruiting = $this->ModelRecruiting->getRecruitingCommittee($recruiting_id);
 				$data['member_groups'] = array();
 				$committees = $this->ModelCommittee->getLists();
 				$i=2;
 				$filter = array();
-				
 				foreach ($committees as $committee) {
 					if ($committee->id == $recruiting[0]->committee_id) {
 						// $filter = array('member.member_group_id'=>$committee->id);
-						$memberall = $this->ModelMember->getLists($filter);
+						$memberall = $this->ModelMember->getLists();
 
 						$filter = array('recruiting_id'=>$recruiting_id);
 						$memberuse = $this->ModelScore->countMembergroup2($committee->id, $filter);
@@ -787,10 +789,11 @@ class Report extends CI_Controller {
 			// header('Content-Disposition: attachment;filename="' . $filename . '"');
 			// header('Cache-Control: max-age=0');
 
+			// unlink($this->config->item('base_document').'uploads/export/'.$filename);
 			$objWriter->save($this->config->item('base_document') . 'uploads/export/' . $filename);
 			// redirect('');
 			echo '<script>';
-			echo 'window.location.href = "http://sunha.savco-doae.com/uploads/export/'.$filename.'";';
+			echo 'window.location.href = "'.$this->config->item('base_url').'uploads/export/'.$filename.'";';
 			echo '</script>';
 			exit();
 			// $objWriter->save('php://output');
