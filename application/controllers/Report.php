@@ -789,7 +789,9 @@ class Report extends CI_Controller {
 
 			$objWriter->save($this->config->item('base_document') . 'uploads/export/' . $filename);
 			// redirect('');
-			header('location:uploads/export/'.$filename);
+			echo '<script>';
+			echo 'window.location.href = "http://sunha.savco-doae.com/uploads/export/'.$filename.'";';
+			echo '</script>';
 			exit();
 			// $objWriter->save('php://output');
 		} catch(Exception $e) {
