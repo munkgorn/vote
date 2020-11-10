@@ -22,7 +22,8 @@
                     htmltime.html(data.now);
                     tid = setTimeout(loadTimeout, 1000);
                     if (data.timeout==true) {
-                        window.location.href = "<?php echo base_url('member/logout'); ?>";
+                        alert('Logout ?');
+                        // window.location.href = "<?php echo base_url('member/logout'); ?>";
                     }
                 },
                 "json"
