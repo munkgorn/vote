@@ -616,174 +616,178 @@ class Report extends CI_Controller {
 
     public function exportExcel($recruiting_id) 
     {
+		try {
+			require_once $this->config->item('base_document').'/assets/PHPExcel-1.8/Classes/PHPExcel.php';
+			$objPHPExcel = new PHPExcel();
+			$objPHPExcel->getProperties()->setCreator("MunkGorn")
+								->setLastModifiedBy("MunkGorn")
+								->setTitle("Report")
+								->setSubject("Report")
+								->setDescription("")
+								->setKeywords("")
+								->setCategory("");
 
-		require_once $this->config->item('base_document').'/assets/PHPExcel-1.8/Classes/PHPExcel.php';
-		$objPHPExcel = new PHPExcel();
-		$objPHPExcel->getProperties()->setCreator("MunkGorn")
-		                     ->setLastModifiedBy("MunkGorn")
-		                     ->setTitle("Report")
-		                     ->setSubject("Report")
-		                     ->setDescription("")
-		                     ->setKeywords("")
-		                     ->setCategory("");
+			$objPHPExcel->setActiveSheetIndex(0);
+			// $objPHPExcel->setTitle('Report');
 
-		$objPHPExcel->setActiveSheetIndex(0);
-		// $objPHPExcel->setTitle('Report');
+			$objPHPExcel->getActiveSheet()->setCellValue('A1', 'กลุ่มเขต');
+			$objPHPExcel->getActiveSheet()->setCellValue('B1', 'จำนวนผู้มีสิทธิทั้งหมด');
+			$objPHPExcel->getActiveSheet()->setCellValue('C1', 'จำนวนผู้มาลงคะแนน');
+			$objPHPExcel->getActiveSheet()->setCellValue('D1', 'จำนวนผู้ไม่มาลงคะแนน');
+			$objPHPExcel->getActiveSheet()->setCellValue('E1', 'จำนวนผู้มาลงคะแนนคิดเป็นร้อยละ');
+			$objPHPExcel->getActiveSheet()->setCellValue('F1', 'จำนวนผู้ไม่ออกเสียง');
+			$objPHPExcel->getActiveSheet()->setCellValue('G1', 'จำนวนผู้ไม่ออกเสียง คิดเป็นร้อยละ');
 
-        $objPHPExcel->getActiveSheet()->setCellValue('A1', 'กลุ่มเขต');
-        $objPHPExcel->getActiveSheet()->setCellValue('B1', 'จำนวนผู้มีสิทธิทั้งหมด');
-        $objPHPExcel->getActiveSheet()->setCellValue('C1', 'จำนวนผู้มาลงคะแนน');
-        $objPHPExcel->getActiveSheet()->setCellValue('D1', 'จำนวนผู้ไม่มาลงคะแนน');
-        $objPHPExcel->getActiveSheet()->setCellValue('E1', 'จำนวนผู้มาลงคะแนนคิดเป็นร้อยละ');
-        $objPHPExcel->getActiveSheet()->setCellValue('F1', 'จำนวนผู้ไม่ออกเสียง');
-        $objPHPExcel->getActiveSheet()->setCellValue('G1', 'จำนวนผู้ไม่ออกเสียง คิดเป็นร้อยละ');
+			// $sql = "SELECT * FROM koob_history_import WHERE id > 0 AND date_save LIKE '2019-10-11%' AND store_id = 1 ";
+			// $sql .= "ORDER BY ref_id, item_name, quantity, shipping_method, id ASC;";
+			// $query = mysqli_query($con, $sql);
+			$this->load->model('ModelRecruiting');
+			$this->load->model('ModelMember');
+			$this->load->model('ModelScore');
+			$this->load->model('ModelCommittee');
+			// echo '<pre>';
+			// print_r($recruiting);
+			// echo '</pre>';
+			// exit();$this->load->model('ModelCommittee');
 
-		// $sql = "SELECT * FROM koob_history_import WHERE id > 0 AND date_save LIKE '2019-10-11%' AND store_id = 1 ";
-		// $sql .= "ORDER BY ref_id, item_name, quantity, shipping_method, id ASC;";
-		// $query = mysqli_query($con, $sql);
-		$this->load->model('ModelRecruiting');
-		$this->load->model('ModelMember');
-		$this->load->model('ModelScore');
-		$this->load->model('ModelCommittee');
-    	// echo '<pre>';
-    	// print_r($recruiting);
-    	// echo '</pre>';
-    	// exit();$this->load->model('ModelCommittee');
+			$recruiting_info = $this->ModelRecruiting->getList($recruiting_id);
 
-    	$recruiting_info = $this->ModelRecruiting->getList($recruiting_id);
+			if ($recruiting_info->recruiting_type=='committee') {
+				$recruiting = $this->ModelRecruiting->getRecruitingCommittee($recruiting_id);
+				$data['member_groups'] = array();
+				$committees = $this->ModelCommittee->getLists();
+				$i=2;
+				$filter = array();
+				
+				foreach ($committees as $committee) {
+					if ($committee->id == $recruiting[0]->committee_id) {
+						// $filter = array('member.member_group_id'=>$committee->id);
+						$memberall = $this->ModelMember->getLists($filter);
 
-    	if ($recruiting_info->recruiting_type=='committee') {
-    		$recruiting = $this->ModelRecruiting->getRecruitingCommittee($recruiting_id);
-    		$data['member_groups'] = array();
-    		$committees = $this->ModelCommittee->getLists();
-    		$i=2;
-    		$filter = array();
-    		
-    		foreach ($committees as $committee) {
-    			if ($committee->id == $recruiting[0]->committee_id) {
-					// $filter = array('member.member_group_id'=>$committee->id);
-					$memberall = $this->ModelMember->getLists($filter);
+						$filter = array('recruiting_id'=>$recruiting_id);
+						$memberuse = $this->ModelScore->countMembergroup2($committee->id, $filter);
+						$percent = (count($memberall)>0) ? ( ((double)$memberuse/count($memberall)) * 100) : 0;
 
-					$filter = array('recruiting_id'=>$recruiting_id);
-					$memberuse = $this->ModelScore->countMembergroup2($committee->id, $filter);
-					$percent = (count($memberall)>0) ? ( ((double)$memberuse/count($memberall)) * 100) : 0;
+						$filter = array('recruiting_id'=>$recruiting_id);
+						$voteno = $this->ModelScore->countNoVote2($committee->id, $filter);
+						$percent_voteno = (count($memberall)>0) ? ( ((double)$voteno/count($memberall)) * 100) : 0;
 
-					$filter = array('recruiting_id'=>$recruiting_id);
-					$voteno = $this->ModelScore->countNoVote2($committee->id, $filter);
-					$percent_voteno = (count($memberall)>0) ? ( ((double)$voteno/count($memberall)) * 100) : 0;
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$i, $committee->name);
+						$objPHPExcel->getActiveSheet()->setCellValue('B'.$i, number_format(count($memberall),0));
+						$objPHPExcel->getActiveSheet()->setCellValue('C'.$i, number_format($memberuse,0));
+						$objPHPExcel->getActiveSheet()->setCellValue('D'.$i, number_format((count($memberall)-$memberuse),0));
+						$objPHPExcel->getActiveSheet()->setCellValue('E'.$i, number_format($percent,2).'%');
+						$objPHPExcel->getActiveSheet()->setCellValue('F'.$i, number_format($voteno,0));
+						$objPHPExcel->getActiveSheet()->setCellValue('G'.$i, number_format($percent_voteno,2).'%');
 
-					$objPHPExcel->getActiveSheet()->setCellValue('A'.$i, $committee->name);
-					$objPHPExcel->getActiveSheet()->setCellValue('B'.$i, number_format(count($memberall),0));
-					$objPHPExcel->getActiveSheet()->setCellValue('C'.$i, number_format($memberuse,0));
-					$objPHPExcel->getActiveSheet()->setCellValue('D'.$i, number_format((count($memberall)-$memberuse),0));
-					$objPHPExcel->getActiveSheet()->setCellValue('E'.$i, number_format($percent,2).'%');
-					$objPHPExcel->getActiveSheet()->setCellValue('F'.$i, number_format($voteno,0));
-					$objPHPExcel->getActiveSheet()->setCellValue('G'.$i, number_format($percent_voteno,2).'%');
+						$i++;
+					}
+				}
+				$objPHPExcel->getActiveSheet()->setTitle('Report');
 
-					$i++;
-    			}
-    		}
-    		$objPHPExcel->getActiveSheet()->setTitle('Report');
-
-    		$i=2;
-    		$j=1;
-    		$objPHPExcel->createSheet(1);
-    		$scores = $this->ModelScore->getListsVote($recruiting_id);
-    		$membervote = array();
-    		$objPHPExcel->setActiveSheetIndex(1);
-	        $objPHPExcel->getActiveSheet()->setCellValue('A1', 'ลำดับที่');
-	        $objPHPExcel->getActiveSheet()->setCellValue('B1', 'เลขสมาชิก');
-	        $objPHPExcel->getActiveSheet()->setCellValue('C1', 'ชื่อ');
-	        $objPHPExcel->getActiveSheet()->setCellValue('D1', 'สกุล');
-	        $objPHPExcel->getActiveSheet()->setCellValue('E1', 'เลขบัตรประจำตัวประชาชน');
-	        $objPHPExcel->getActiveSheet()->setCellValue('F1', 'รหัสกลุ่ม');
-    		foreach ($scores as $score) {
-    			$membervote[] = $score->member_id;
-    			$member = $this->ModelMember->getList($score->member_id);
-				$textvote = 'มาลงคะแนน';	
-    			$objPHPExcel->getActiveSheet()->setCellValue('A'.$i, $j++);
-    			$objPHPExcel->getActiveSheet()->setCellValue('B'.$i, '="'.$member->member_no.'"');
-    			$objPHPExcel->getActiveSheet()->setCellValue('C'.$i, $member->prefix_name.' '.$member->firstname);
-    			$objPHPExcel->getActiveSheet()->setCellValue('D'.$i, $member->lastname);
-    			$objPHPExcel->getActiveSheet()->setCellValue('E'.$i, '="'.$member->id_card.'"');
-    			$objPHPExcel->getActiveSheet()->setCellValue('F'.$i, '="'.$member->temp_member_group_code.'"');
-    			$objPHPExcel->getActiveSheet()->setCellValue('G'.$i, $textvote);
-    			$i++;
-    		}
-    		$objPHPExcel->getActiveSheet()->setTitle('Member Vote');
-
-
-
-    		$i=2;
-    		$j=1;
-    		$objPHPExcel->createSheet(2);
-    		// $members = $this->ModelMember->getListsWithScore($recruiting_id);
-    		$members = $this->ModelMember->getLists();
-    		$objPHPExcel->setActiveSheetIndex(2);
-	        $objPHPExcel->getActiveSheet()->setCellValue('A1', 'ลำดับที่');
-	        $objPHPExcel->getActiveSheet()->setCellValue('B1', 'เลขสมาชิก');
-	        $objPHPExcel->getActiveSheet()->setCellValue('C1', 'ชื่อ');
-	        $objPHPExcel->getActiveSheet()->setCellValue('D1', 'สกุล');
-	        $objPHPExcel->getActiveSheet()->setCellValue('E1', 'เลขบัตรประจำตัวประชาชน');
-	        $objPHPExcel->getActiveSheet()->setCellValue('F1', 'รหัสกลุ่ม');
-	        // $objPHPExcel->getActiveSheet()->setCellValue('G1', '');
-    		foreach ($members as $member) {
-    			if (!in_array($member->id, $membervote)) {
-					$textvote = 'ไม่มาลงคะแนน';
-	    			$objPHPExcel->getActiveSheet()->setCellValue('A'.$i, $j++);
-	    			$objPHPExcel->getActiveSheet()->setCellValue('B'.$i, '="'.$member->member_no.'"');
-	    			$objPHPExcel->getActiveSheet()->setCellValue('C'.$i, $member->prefix_name.' '.$member->firstname);
-	    			$objPHPExcel->getActiveSheet()->setCellValue('D'.$i, $member->lastname);
-	    			$objPHPExcel->getActiveSheet()->setCellValue('E'.$i, '="'.$member->id_card.'"');
-	    			$objPHPExcel->getActiveSheet()->setCellValue('F'.$i, '="'.$member->temp_member_group_code.'"');
-	    			$objPHPExcel->getActiveSheet()->setCellValue('G'.$i, $textvote);
-	    			$i++;
-    			}
-    		}
-    		$objPHPExcel->getActiveSheet()->setTitle('Member Novote');
-    	} else {
-
-	    	$recruiting = $this->ModelRecruiting->getRecruitingMemberGroup($recruiting_id);
-			$data['member_groups'] = array();
-			$members = $this->ModelMember->getGroups();
-			$i=2;
-			foreach ($members as $member) {
-				// only this group recuriting
-				if ($member->id == $recruiting[0]->member_group_id) {
-					$filter = array('member.member_group_id'=>$member->id);
-					$memberall = $this->ModelMember->getLists($filter);
-
-					$filter = array('recruiting_id'=>$recruiting_id);
-					$memberuse = $this->ModelScore->countMembergroup($member->id, $filter);
-					$percent = (count($memberall)>0) ? ( ((double)$memberuse/count($memberall)) * 100) : 0;
-
-					$filter = array('recruiting_id'=>$recruiting_id);
-					$voteno = $this->ModelScore->countNoVote($member->id, $filter);
-					$percent_voteno = (count($memberall)>0) ? ( ((double)$voteno/count($memberall)) * 100) : 0;
-
-					$objPHPExcel->getActiveSheet()->setCellValue('A'.$i, $member->name);
-					$objPHPExcel->getActiveSheet()->setCellValue('B'.$i, number_format(count($memberall),0));
-					$objPHPExcel->getActiveSheet()->setCellValue('C'.$i, number_format($memberuse,0));
-					$objPHPExcel->getActiveSheet()->setCellValue('D'.$i, number_format((count($memberall)-$memberuse),0));
-					$objPHPExcel->getActiveSheet()->setCellValue('E'.$i, number_format($percent,2).'%');
-					$objPHPExcel->getActiveSheet()->setCellValue('F'.$i, number_format($voteno,0));
-					$objPHPExcel->getActiveSheet()->setCellValue('G'.$i, number_format($percent_voteno,2).'%');
-
+				$i=2;
+				$j=1;
+				$objPHPExcel->createSheet(1);
+				$scores = $this->ModelScore->getListsVote($recruiting_id);
+				$membervote = array();
+				$objPHPExcel->setActiveSheetIndex(1);
+				$objPHPExcel->getActiveSheet()->setCellValue('A1', 'ลำดับที่');
+				$objPHPExcel->getActiveSheet()->setCellValue('B1', 'เลขสมาชิก');
+				$objPHPExcel->getActiveSheet()->setCellValue('C1', 'ชื่อ');
+				$objPHPExcel->getActiveSheet()->setCellValue('D1', 'สกุล');
+				$objPHPExcel->getActiveSheet()->setCellValue('E1', 'เลขบัตรประจำตัวประชาชน');
+				$objPHPExcel->getActiveSheet()->setCellValue('F1', 'รหัสกลุ่ม');
+				foreach ($scores as $score) {
+					$membervote[] = $score->member_id;
+					$member = $this->ModelMember->getList($score->member_id);
+					$textvote = 'มาลงคะแนน';	
+					$objPHPExcel->getActiveSheet()->setCellValue('A'.$i, $j++);
+					$objPHPExcel->getActiveSheet()->setCellValue('B'.$i, '="'.$member->member_no.'"');
+					$objPHPExcel->getActiveSheet()->setCellValue('C'.$i, $member->prefix_name.' '.$member->firstname);
+					$objPHPExcel->getActiveSheet()->setCellValue('D'.$i, $member->lastname);
+					$objPHPExcel->getActiveSheet()->setCellValue('E'.$i, '="'.$member->id_card.'"');
+					$objPHPExcel->getActiveSheet()->setCellValue('F'.$i, '="'.$member->temp_member_group_code.'"');
+					$objPHPExcel->getActiveSheet()->setCellValue('G'.$i, $textvote);
 					$i++;
 				}
-			}
-			$objPHPExcel->getActiveSheet()->setTitle('Report');
-		}
+				$objPHPExcel->getActiveSheet()->setTitle('Member Vote');
 
-		
-		$objPHPExcel->getSecurity()->setLockWindows(false);
-		$objPHPExcel->getSecurity()->setLockStructure(false);
-		$objPHPExcel->setActiveSheetIndex(0);
-		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-		$filename = 'Export_'.date('My', time()).'.xlsx';
-		header('Content-type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment; filename="' . $filename . '"');
-		$objWriter->save('php://output');
+
+
+				$i=2;
+				$j=1;
+				$objPHPExcel->createSheet(2);
+				// $members = $this->ModelMember->getListsWithScore($recruiting_id);
+				$members = $this->ModelMember->getLists();
+				$objPHPExcel->setActiveSheetIndex(2);
+				$objPHPExcel->getActiveSheet()->setCellValue('A1', 'ลำดับที่');
+				$objPHPExcel->getActiveSheet()->setCellValue('B1', 'เลขสมาชิก');
+				$objPHPExcel->getActiveSheet()->setCellValue('C1', 'ชื่อ');
+				$objPHPExcel->getActiveSheet()->setCellValue('D1', 'สกุล');
+				$objPHPExcel->getActiveSheet()->setCellValue('E1', 'เลขบัตรประจำตัวประชาชน');
+				$objPHPExcel->getActiveSheet()->setCellValue('F1', 'รหัสกลุ่ม');
+				// $objPHPExcel->getActiveSheet()->setCellValue('G1', '');
+				foreach ($members as $member) {
+					if (!in_array($member->id, $membervote)) {
+						$textvote = 'ไม่มาลงคะแนน';
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$i, $j++);
+						$objPHPExcel->getActiveSheet()->setCellValue('B'.$i, '="'.$member->member_no.'"');
+						$objPHPExcel->getActiveSheet()->setCellValue('C'.$i, $member->prefix_name.' '.$member->firstname);
+						$objPHPExcel->getActiveSheet()->setCellValue('D'.$i, $member->lastname);
+						$objPHPExcel->getActiveSheet()->setCellValue('E'.$i, '="'.$member->id_card.'"');
+						$objPHPExcel->getActiveSheet()->setCellValue('F'.$i, '="'.$member->temp_member_group_code.'"');
+						$objPHPExcel->getActiveSheet()->setCellValue('G'.$i, $textvote);
+						$i++;
+					}
+				}
+				$objPHPExcel->getActiveSheet()->setTitle('Member Novote');
+			} else {
+
+				$recruiting = $this->ModelRecruiting->getRecruitingMemberGroup($recruiting_id);
+				$data['member_groups'] = array();
+				$members = $this->ModelMember->getGroups();
+				$i=2;
+				foreach ($members as $member) {
+					// only this group recuriting
+					if ($member->id == $recruiting[0]->member_group_id) {
+						$filter = array('member.member_group_id'=>$member->id);
+						$memberall = $this->ModelMember->getLists($filter);
+
+						$filter = array('recruiting_id'=>$recruiting_id);
+						$memberuse = $this->ModelScore->countMembergroup($member->id, $filter);
+						$percent = (count($memberall)>0) ? ( ((double)$memberuse/count($memberall)) * 100) : 0;
+
+						$filter = array('recruiting_id'=>$recruiting_id);
+						$voteno = $this->ModelScore->countNoVote($member->id, $filter);
+						$percent_voteno = (count($memberall)>0) ? ( ((double)$voteno/count($memberall)) * 100) : 0;
+
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$i, $member->name);
+						$objPHPExcel->getActiveSheet()->setCellValue('B'.$i, number_format(count($memberall),0));
+						$objPHPExcel->getActiveSheet()->setCellValue('C'.$i, number_format($memberuse,0));
+						$objPHPExcel->getActiveSheet()->setCellValue('D'.$i, number_format((count($memberall)-$memberuse),0));
+						$objPHPExcel->getActiveSheet()->setCellValue('E'.$i, number_format($percent,2).'%');
+						$objPHPExcel->getActiveSheet()->setCellValue('F'.$i, number_format($voteno,0));
+						$objPHPExcel->getActiveSheet()->setCellValue('G'.$i, number_format($percent_voteno,2).'%');
+
+						$i++;
+					}
+				}
+				$objPHPExcel->getActiveSheet()->setTitle('Report');
+			}
+
+			
+			$objPHPExcel->getSecurity()->setLockWindows(false);
+			$objPHPExcel->getSecurity()->setLockStructure(false);
+			$objPHPExcel->setActiveSheetIndex(0);
+			$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+			$filename = 'Export_'.date('My', time()).'.xlsx';
+			header('Content-type: application/vnd.ms-excel');
+			header('Content-Disposition: attachment;filename="' . $filename . '"');
+			header('Cache-Control: max-age=0');
+			$objWriter->save('php://output');
+		} catch(Exception $e) {
+			echo 'Message: ' .$e->getMessage();
+		}
     }
     
 	public function checkLogin() 

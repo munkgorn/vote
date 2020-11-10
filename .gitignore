@@ -1,5 +1,5 @@
 application/config/database.php
 uploads/*
 index.php
-config/config.php
 .htaccess
+application/config/config.php
