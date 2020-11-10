@@ -21,7 +21,7 @@ class Admin extends CI_Controller {
 
     public function emptyMember() {
         
-        $this->load->model('ModelMember');
+		$this->load->model('ModelMember');
         echo $result = $this->ModelMember->emptyAll();
 
 
