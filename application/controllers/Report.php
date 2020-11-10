@@ -101,7 +101,7 @@ class Report extends CI_Controller {
     		$members = $this->ModelCommittee->getLists();
     		foreach ($members as $member) {
     			if ($member->id == $recruiting[0]->committee_id) {
-					// $filter = array('member.member_group_id'=>$member->id);
+					$filter = array('member.member_group_id'=>$member->member_group_id);
 					$memberall = $this->ModelMember->getLists($filter);
 
 					
