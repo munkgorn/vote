@@ -27,7 +27,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <form action="<?php echo $action; ?>" method="post">
+                        <form action="<?php echo $action; ?>" method="post" id="search-form">
                         <div class="row">
                             <div class="col-10">
                                 <div class="form-group row">
@@ -121,6 +121,17 @@
         All Rights Reserved by Matrix-admin. Designed and Developed by <a href="https://wrappixel.com">WrapPixel</a>.
     </footer> -->
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#search-form').submit(function(event) {
+            if(confirm('กรุณา ค้นหา ไฟล์นี้หลังจากการสรรหาเสร็จสิ้นแล้ว  เพื่อลดการทำงานของ server กดยกเลิกเพื่อออก หรือ ยืนยันเพื่อ ค้นหา')==true){
+
+            }else{
+                event.preventDefault();
+            }
+        });
+    });
+</script>
 <script>
 jQuery(document).ready(function($) {
     

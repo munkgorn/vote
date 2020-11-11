@@ -1,4 +1,8 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');?>
+<?php  
+    $resultUser = json_decode(base64_decode($_SESSION['token']));
+    $nameUser = $resultUser->prefix_name." ".$resultUser->firstname." ".$resultUser->lastname;
+?>
 <!-- TEST -->
 <div id="main-wrapper">
 <!-- ============================================================== -->
@@ -24,6 +28,7 @@
                  <!-- Logo text -->
                 <span class="logo-text">
                     Vote
+                    <i class="ti-alarm-clock"></i> <i class="timelogout"></i>
                      <!-- dark Logo text -->
                      <!-- <img src="assets/theme/assets/images/logo-text.png" alt="homepage" class="light-logo" /> -->
 
@@ -84,7 +89,7 @@
                         <a class="dropdown-item" href="#">Something else here</a>
                     </div>
                 </li> -->
-                <li class="nav-item"><a href="" class="nav-link"><i class="ti-alarm-clock"></i> <i id="timelogout"></i></a></li>
+                <li class="nav-item"><a href="" class="nav-link"><i class="ti-user"></i> <?php echo $nameUser; ?> <i class="ti-alarm-clock"></i> <i class="timelogout"></i></a></li>
                 <li class="nav-item dropdown">
                     <a href="<?php echo $base_url; ?>member/logout" class="nav-link"><i class="ti-lock"></i> Logout</a>
                     <!-- <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="<?php echo $base_url; ?>assets/theme/lib/assets/images/users/1.jpg" alt="user" class="rounded-circle" width="31"></a>

@@ -118,7 +118,7 @@
                                     <th>จำนวนผู้มาลงคะแนน</th>
                                     <th>จำนวนผู้ไม่มาลงคะแนน</th>
                                     <th>จำนวนผู้มาลงคะแนนคิดเป็นร้อยละ</th>
-                                    <th>จำนวนผู้ไม่ออกเสียง</th>
+                                    <th>จำนวนผู้ไม่ออกเสียง(Voteno)</th>
                                     <th>จำนวนผู้ไม่ออกเสียง คิดเป็นร้อยละ</th>
                                 </tr>
                             </thead>
@@ -495,8 +495,14 @@ jQuery(document).ready(function($) {
 
     $('#Modaltable').on('show.bs.modal', function(event) {
         var recruitingid = $(event.relatedTarget).data('id');
-
         $('#exportExcel').attr('href', '<?php echo $base_url;?>Report/exportExcel/'+recruitingid);
+        $('#exportExcel').click(function(event) {
+            if(confirm('กรุณา export ไฟล์นี้หลังจากการสรรหาเสร็จสิ้นแล้ว  เพื่อลดการทำงานของ server กดยกเลิกเพื่อออก หรือ ยืนยันเพื่อ download รายชื่อ')==true){
+            }else{
+                event.preventDefault();
+            }
+        });
+        
         // console.log(recruitingid);
 
         $('#tableMemberGroup').dataTable({

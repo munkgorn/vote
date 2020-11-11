@@ -27,7 +27,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <form action="<?php echo $action; ?>" method="post">
+                        <form action="<?php echo $action; ?>" method="post" id="search-form">
                             <div class="row">
                                 <div class="col-10">
                                     <div class="form-group row">
@@ -102,6 +102,18 @@
 <script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.1/css/buttons.dataTables.min.css">
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#search-form').submit(function(event) {
+            if(confirm('กรุณา ค้นหา ไฟล์นี้หลังจากการสรรหาเสร็จสิ้นแล้ว  เพื่อลดการทำงานของ server กดยกเลิกเพื่อออก หรือ ยืนยันเพื่อ ค้นหา')==true){
+
+            }else{
+                event.preventDefault();
+            }
+        });
+    });
+</script>
+
 <script>
 jQuery(document).ready(function($) {
     

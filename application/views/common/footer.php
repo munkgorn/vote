@@ -11,7 +11,7 @@
     <script>
     $(document).ready(function () {
 
-        var htmltime = $('#timelogout');
+        var htmltime = $('.timelogout');
 
         <?php if (isset($_SESSION['expire_date'])): ?>
         var tid = setTimeout(loadTimeout, 1000);
