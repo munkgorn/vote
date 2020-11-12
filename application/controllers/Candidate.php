@@ -114,7 +114,7 @@ class Candidate extends CI_Controller {
 
 		$month = array(1=>'มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
 
-		$data['month'] = date('d', strtotime($data['recruiting']->date_score_end)).' '.$month[date('n', strtotime($data['recruiting']->date_score_end))].' '.date('Y', strtotime($data['recruiting']->date_score_end));
+		$data['month'] = date('d', strtotime($data['recruiting']->date_score_end)).' '.$month[date('n', strtotime($data['recruiting']->date_score_end))].' '.(date('Y', strtotime($data['recruiting']->date_score_end)) + 543);
 
 		$data['candidates'] = array();
 		$filter = array('order_score'=>'desc');
