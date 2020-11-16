@@ -109,12 +109,17 @@
     </footer> -->
 </div>
 <script>
-jQuery(document).ready(function($) {
+// jQuery(document).ready(function($) {
+//     $('#zero_config').dataTable({
+//         destroy: true, 
+//         columnDefs: [
+//             { targets:6, orderable: false },
+//         ]
+//    });
+// });
+$(document).ready(function() {
     $('#zero_config').dataTable({
-        destroy: true, 
-        columnDefs: [
-            { targets:6, orderable: false },
-        ]
-   });
+        "order": [[ 0, "desc" ]]
+    });
 });
 </script>

@@ -271,6 +271,7 @@ class ModelRecruiting extends CI_Model {
 	public function getLists() 
 	{	
 		$this->db->where('del', 0);
+		$this->db->order_by('id','DESC');
 		$query = $this->db->get('recruiting');
 		return $query->result();
 	}
