@@ -390,7 +390,7 @@ class Candidate extends CI_Controller {
 
 			$next = $this->checkHasNextVote();
 			if ($next==false) {
-				redirect('member/logout');
+				redirect('member/votesuccess');
 			} else {
 				redirect('Candidate/VoteScore/'.$next);
 			}

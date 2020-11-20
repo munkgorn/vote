@@ -208,6 +208,29 @@ class Member extends CI_Controller
         $this->session->unset_userdata('expire_date');
         redirect('member/login');
     }
+    public function votesuccess(){
+        $this->session->set_userdata('token', '');
+        $this->session->unset_userdata('token');
+        $this->session->unset_userdata('expire_date');
+        // redirect('member/votesuccess');
+        date_default_timezone_set("Asia/Bangkok");
+        // echo md5('898988');
+        $data = array();
+        $data['heading_title'] = 'ลงคะแนนเรียบร้อย';
+        $data['action'] = base_url('member/login');
+        $data['base_url'] = base_url();
+        $data['error'] = '';
+
+        $data['success'] = $this->session->has_userdata('success') ? $this->session->success : '';
+        $this->session->unset_userdata('success');
+        $data['error'] = $this->session->has_userdata('error') ? $this->session->error : '';
+        $this->session->unset_userdata('error');
+
+        $this->load->view('common/header', $data);
+        $this->load->view('member/votesuccess', $data);
+        $this->load->view('common/footer', $data);
+
+    }
 
     public function add()
     {
