@@ -448,7 +448,7 @@ class Member extends CI_Controller
                     'id_card' => $list->id_card,
                     'no' => ++$key,
                     'name' => $list->prefix_name . ' ' . $list->firstname . ' ' . $list->lastname,
-                    'member_no' => $list->member_no,
+                    'member_no' => sprintf('%06d',$list->member_no),
                     'member_group_name' => $list->member_group_name,
                     'status' => ($list->status == 1) ? 'ใช้งาน' : 'ไม่ใช้งาน',
                     'action' => $action,
