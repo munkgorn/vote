@@ -627,6 +627,12 @@ class Member extends CI_Controller
         $this->load->view('common/footer', $data);
     }
 
+    public function updateImport() 
+    {
+        $this->load->model('ModelMember');
+        $result = $this->ModelMember->updateImportCSV();
+    }
+
     public function importCSV()
     {
         $this->checkLogin();
