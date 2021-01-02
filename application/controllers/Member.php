@@ -67,7 +67,7 @@ class Member extends CI_Controller
             $login['member_no'] = $this->input->post('member_no');
             $login['password'] = ($this->input->post('password'));
             $member = $this->ModelMember->login($login);
-            echo $member;exit();
+            // echo $member;exit();
             if (isset($member['id']) && $member['id'] > 0) {
 
                 $permiss = $this->ModelPermission->getMemberToPermission($member['member_type_id']);

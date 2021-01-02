@@ -22,7 +22,7 @@ class ModelMember extends CI_Model
     public function login($data)
     {
         $this->db->where('id_card', $data['id_card']);
-        $this->db->where('member_no', sprintf('%06d',$data['member_no']));
+        $this->db->where('member_no', (int)sprintf('%06d',$data['member_no']));
         $this->db->where('password', $data['password']);
         $this->db->where('status', 1);
         $query = $this->db->get('member');
