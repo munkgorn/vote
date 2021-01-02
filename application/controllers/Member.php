@@ -631,6 +631,7 @@ class Member extends CI_Controller
     {
         $this->load->model('ModelMember');
         $result = $this->ModelMember->updateImportCSV();
+        var_dump($result);
     }
 
     public function importCSV()

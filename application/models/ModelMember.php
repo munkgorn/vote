@@ -146,14 +146,14 @@ class ModelMember extends CI_Model
         $members = $query->result();
         foreach ($members as $member) {
             
-            $temp = sprintf('%06d', $member->temp_member_group_code);
-            $sql = "SELECT * FROM vote_member_group WHERE `code` = '".$temp."'";
-            $query = $this->db->query($sql); 
-            $member_group = $query->row_array();
-            $password = str_replace('\r','',str_replace('\n','',str_replace('\t','', trim($member->temp_member_group))));
+            // $temp = sprintf('%06d', $member->temp_member_group_code);
+            // $sql = "SELECT * FROM vote_member_group WHERE `code` = '".$temp."'";
+            // $query = $this->db->query($sql); 
+            // $member_group = $query->row_array();
+            // $password = str_replace('\r','',str_replace('\n','',str_replace('\t','', trim($member->temp_member_group))));
 
-            $sql = "UPDATE vote_member SET member_type_id = 3, member_group_id = '".$member_group['id']."', `password`='".$password."',`status`=1,date_added='".date('Y-m-d H:i:s', time())."',date_modify='".date('Y-m-d H:i:s', time())."',del=0 WHERE id='".$member->id."'";
-            $this->db->query($sql);
+            // $sql = "UPDATE vote_member SET member_type_id = 3, member_group_id = '".$member_group['id']."', `password`='".$password."',`status`=1,date_added='".date('Y-m-d H:i:s', time())."',date_modify='".date('Y-m-d H:i:s', time())."',del=0 WHERE id='".$member->id."'";
+            // $this->db->query($sql);
 
             $newmemberno = sprintf('%06d',$member->member_no);
             $sql = "UPDATE vote_member SET member_no = '".$newmemberno."' WHERE id='".$member->id."'";
