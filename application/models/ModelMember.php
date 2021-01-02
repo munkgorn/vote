@@ -26,8 +26,8 @@ class ModelMember extends CI_Model
         $this->db->where('password', $data['password']);
         $this->db->where('status', 1);
         $query = $this->db->get('member');
-        // return $this->db->last_query();
-        return $query->row_array();
+        return $this->db->last_query();
+        // return $query->row_array();
     }
 
     public function updateLogin($id_member, $date = '')
