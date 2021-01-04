@@ -43,7 +43,7 @@
                                 <thead>
                                     <tr>
                                         <th>ลงคะแนน</th>
-                                        <th>ลำดับที่</th>
+                                        <th>ประเภทที่</th>
                                         <th>วาระการสรรหา</th>
                                         <th>ตำแหน่ง</th>
                                         <th>ชุดที่</th>
@@ -119,7 +119,7 @@
 // });
 $(document).ready(function() {
     $('#zero_config').dataTable({
-        "order": [[ 0, "desc" ]]
+        "order": [[ 1, "asc" ]]
     });
 });
 </script>
