@@ -171,6 +171,92 @@ class Candidate extends CI_Controller {
 		$this->load->view('common/menu', $data);
 		$this->load->view('candidate/manageoutcome', $data); 
 		$this->load->view('common/footer', $data);
+	}
+	
+
+    public function cacheRecruitings() {
+        $json = array();
+        if (!file_exists($this->config->item('base_document') . 'uploads/cache/recruitings.json')) {
+            // load
+            $this->load->model('ModelRecruiting');
+            $json = $this->ModelRecruiting->getLists();
+            $fp = fopen($this->config->item('base_document') . 'uploads/cache/recruitings.json', 'w');
+            fwrite($fp, json_encode($json));
+            fclose($fp);
+        }
+
+        $file_handle = fopen($this->config->item('base_document') . 'uploads/cache/recruitings.json', "r");
+        while (!feof($file_handle)) {
+            $line_of_text = fgets($file_handle);
+            $json[] = $line_of_text;
+        }
+        fclose($file_handle);
+
+        return $json;
+    }
+
+    public function cacheRecruitingType($type=1, $recruiting_id) {
+        $json = array();
+        
+        if ($type==1) { // committee
+            if (!file_exists($this->config->item('base_document') . 'uploads/cache/recruitingsTypeCommittee.json')) {
+                $this->load->model('ModelRecruiting');
+                $lists_committee = $this->ModelRecruiting->getRecruitingCommittee($recruiting_id);
+                foreach ($lists_committee as $list_committee) {
+                    $list2[] = $list_committee->committee_name;
+                    $list[] = array(
+                        'name' => $list_committee->committee_name,
+                        'type_id' => $list_committee->type_id,
+                    );
+                }
+                $json = array(
+                    'list2' => $list2,
+                    'list' => $list
+                );
+                $fp = fopen($this->config->item('base_document') . 'uploads/cache/recruitingsTypeCommittee.json', 'w');
+                fwrite($fp, json_encode($json));
+                fclose($fp);
+                
+            }
+
+            $file_handle = fopen($this->config->item('base_document') . 'uploads/cache/recruitingsTypeCommittee.json', "r");
+            while (!feof($file_handle)) {
+                $line_of_text = fgets($file_handle);
+                $json[] = $line_of_text;
+            }
+            fclose($file_handle);
+        } else if ($type==2) { // member group
+            if (!file_exists($this->config->item('base_document') . 'uploads/cache/recruitingsTypeMemberGroup.json')) {
+                $this->load->model('ModelRecruiting');
+                $lists_members = $this->ModelRecruiting->getRecruitingMemberGroup($recruiting_id);
+                foreach ($lists_members as $list_member) {
+                    if ($member->member_group_id == $list_member->type_id) {
+                        $list2[] = $list_member->member_group_name;
+                        $list[] = array(
+                            'name' => $list_member->member_group_name,
+                            'type_id' => $list_member->type_id,
+                        );
+                    }
+                }
+                $json = array(
+                    'list2' => $list2,
+                    'list' => $list
+                );
+                $fp = fopen($this->config->item('base_document') . 'uploads/cache/recruitingsTypeMemberGroup.json', 'w');
+                fwrite($fp, json_encode($json));
+                fclose($fp);
+                
+            }
+
+            $file_handle = fopen($this->config->item('base_document') . 'uploads/cache/recruitingsTypeMemberGroup.json', "r");
+            while (!feof($file_handle)) {
+                $line_of_text = fgets($file_handle);
+                $json[] = $line_of_text;
+            }
+            fclose($file_handle);
+        }
+        
+        return $json;
     }
 
     public function vote() 
@@ -188,7 +274,13 @@ class Candidate extends CI_Controller {
 		$this->load->model('ModelRecruiting');
 		$this->load->model('ModelScore');
 		$this->load->model('ModelCandidate');
-		$recruitings = $this->ModelRecruiting->getLists();
+		// $recruitings = $this->ModelRecruiting->getLists();
+
+		$recruitings = json_decode($this->cacheRecruitings()[0]);
+		// echo '<pre>';
+		// print_r($recruitings);
+		// echo '</pre>';
+		// exit();
 
 		$token = $this->session->userdata('token');
 		$member = json_decode(base64_decode($token));
@@ -200,28 +292,50 @@ class Candidate extends CI_Controller {
 				$list2 = array();
 				if ($value->recruiting_type=='committee') {
 					// $bypass_committee = true;
-					$lists_committee = $this->ModelRecruiting->getRecruitingCommittee($value->id);
-					foreach ($lists_committee as $list_committee) {
-						$list2[] = $list_committee->committee_name;
+
+					$temp = json_decode($this->cacheRecruitingType(1, $value->id)[0]);
+					foreach ($temp->list2 as $templist2) {
+						$list2[] = $templist2;
+					}
+					foreach ($temp->list as $list_committee) {
 						$list[] = array(
-							'name' => $list_committee->committee_name,
+							'name' => $list_committee->name,
 							'type_id' => $list_committee->type_id,
 						);
 					}
+					// $lists_committee = $this->ModelRecruiting->getRecruitingCommittee($value->id);
+					// foreach ($lists_committee as $list_committee) {
+					// 	$list2[] = $list_committee->committee_name;
+					// 	$list[] = array(
+					// 		'name' => $list_committee->committee_name,
+					// 		'type_id' => $list_committee->type_id,
+					// 	);
+					// }
 				}
 				if ($value->recruiting_type=='members') {
 					// $bypass_committee = false;
-					$lists_members = $this->ModelRecruiting->getRecruitingMemberGroup($value->id);
-					foreach ($lists_members as $list_member) {
-						// echo $list_member->type_id;
-						if ($member->member_group_id==$list_member->type_id) {
-						$list2[] = $list_member->member_group_name;
-							$list[] = array(
-								'name' => $list_member->member_group_name,
-								'type_id' => $list_member->type_id,
-							);
-						}
+
+					$temp = json_decode($this->cacheRecruitingType(2, $value->id)[0]);
+					foreach ($temp->list2 as $templist2) {
+						$list2[] = $templist2;
 					}
+					foreach ($temp->list as $list_committee) {
+						$list[] = array(
+							'name' => $list_committee->name,
+							'type_id' => $list_committee->type_id,
+						);
+					}
+					// $lists_members = $this->ModelRecruiting->getRecruitingMemberGroup($value->id);
+					// foreach ($lists_members as $list_member) {
+					// 	// echo $list_member->type_id;
+					// 	if ($member->member_group_id==$list_member->type_id) {
+					// 	$list2[] = $list_member->member_group_name;
+					// 		$list[] = array(
+					// 			'name' => $list_member->member_group_name,
+					// 			'type_id' => $list_member->type_id,
+					// 		);
+					// 	}
+					// }
 				}
 
 				// if ($value->recruiting_type == 'committee') {
@@ -291,6 +405,7 @@ class Candidate extends CI_Controller {
 				// var_dump($canvote);
 				// var_dump($timevote);
 				// echo '<br>';
+
 
 				// check i can vote?
 				if (count($list)>0) {
@@ -397,7 +512,16 @@ class Candidate extends CI_Controller {
 			exit();
 		}
 
-		$recruiting = $this->ModelRecruiting->getList($id);
+		$listrecruitings = json_decode($this->cacheRecruitings()[0]);
+		// print_r($listrecruitings);
+		$temp = array();
+		foreach ($listrecruitings as $va) {
+			if ($va->id==$id) {
+				$temp = $va;
+			}
+		}
+		// $recruiting = $this->ModelRecruiting->getList($id);
+		$recruiting = $temp;
 		// if (count($recruitings)>0) {
 			// $i=1;
 			// foreach ($recruitings as $key => $value) {

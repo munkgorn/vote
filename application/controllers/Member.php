@@ -181,9 +181,15 @@ class Member extends CI_Controller
                         $list2 = array();
                         if ($value->recruiting_type == 'committee') {
                             $temp = json_decode($this->cacheRecruitingType(1, $value->id)[0]);
-                            $list2 = $temp->list2;
-                            $list = $temp->list;
-
+                            foreach ($temp->list2 as $templist2) {
+                                $list2[] = $templist2;
+                            }
+                            foreach ($temp->list as $list_committee) {
+                                $list[] = array(
+                                    'name' => $list_committee->name,
+                                    'type_id' => $list_committee->type_id,
+                                );
+                            }
                             // $lists_committee = $this->ModelRecruiting->getRecruitingCommittee($value->id);
                             // foreach ($lists_committee as $list_committee) {
                             //     $list2[] = $list_committee->committee_name;
@@ -195,8 +201,15 @@ class Member extends CI_Controller
                         }
                         if ($value->recruiting_type == 'members') {
                             $temp = json_decode($this->cacheRecruitingType(2, $value->id)[0]);
-                            $list2 = $temp->list2;
-                            $list = $temp->list;
+                            foreach ($temp->list2 as $templist2) {
+                                $list2[] = $templist2;
+                            }
+                            foreach ($temp->list as $list_committee) {
+                                $list[] = array(
+                                    'name' => $list_committee->name,
+                                    'type_id' => $list_committee->type_id,
+                                );
+                            }
                             // $lists_members = $this->ModelRecruiting->getRecruitingMemberGroup($value->id);
                             // foreach ($lists_members as $list_member) {
                             //     // echo $member->member_group_id.' '.$list_member->type_id;
@@ -299,13 +312,13 @@ class Member extends CI_Controller
         // }
 
 
-        $n = 60; // seconde cache
+        // $n = 60; // seconde cache
         //$this->output->delete_cache();
 
         // $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
         // $this->output->set_header("Cache-Control: post-check=0, pre-check=0");
         // $this->output->set_header("Pragma: no-cache"); 
-        $this->output->cache($n);
+        // $this->output->cache($n);
 
         $this->load->view('common/header_login', $data);
         $this->load->view('member/login', $data);
