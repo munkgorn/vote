@@ -45,20 +45,7 @@ class Member extends CI_Controller
             ->set_output(json_encode($json));
     }
 
-    public function login()
-    {
-        date_default_timezone_set("Asia/Bangkok");
-        // echo md5('898988');
-        $data = array();
-        $data['heading_title'] = 'เข้าสู่ระบบ';
-        $data['action'] = base_url('member/login');
-        $data['base_url'] = base_url();
-        $data['error'] = '';
-
-        $data['success'] = $this->session->has_userdata('success') ? $this->session->success : '';
-        $this->session->unset_userdata('success');
-        $data['error'] = $this->session->has_userdata('error') ? $this->session->error : '';
-        $this->session->unset_userdata('error');
+    public function submitLogin() {
 
         if ($this->input->server('REQUEST_METHOD') == 'POST') {
             $this->load->model('ModelMember');
@@ -171,38 +158,57 @@ class Member extends CI_Controller
                 $data['error'] = 'ชื่อผู้ใช้งาน หรือ รหัสผ่าน ผิด';
             }
         }
+    }
 
-        $this->load->model('ModelNews');
-        $data['lists'] = array();
-        $lists = $this->ModelNews->getLists();
-        foreach ($lists as $key => $list) {
-            $priority = array(1 => 'ด่วน', 'ด่วนมาก', 'ด่วนที่สุด');
+    public function login()
+    {
+        date_default_timezone_set("Asia/Bangkok");
+        // echo md5('898988');
+        $data = array();
+        $data['heading_title'] = 'เข้าสู่ระบบ';
+        $data['action'] = base_url('member/submitLogin');
+        $data['base_url'] = base_url();
+        $data['error'] = '';
 
-            $showtime = false;
-            $time = time();
-            if ($time >= strtotime($list->date_show) && $time <= strtotime($list->date_end)) {
-                $showtime = true;
-            }
-
-            $data['lists'][] = array(
-                'id' => $list->id,
-                'no' => ++$key,
-                'name' => $list->name,
-                'type_name' => $list->type_name,
-                'priority' => !empty($priority[$list->priority]) ? $priority[$list->priority] : '',
-                'file' => !empty($list->file) ? base_url() . '/uploads/' . $list->file : '',
-                'showtime' => $showtime,
-                'date_show' => $list->date_show,
-                'date_end' => $list->date_end,
-            );
-        }
+        $data['success'] = $this->session->has_userdata('success') ? $this->session->success : '';
+        $this->session->unset_userdata('success');
+        $data['error'] = $this->session->has_userdata('error') ? $this->session->error : '';
+        $this->session->unset_userdata('error');
 
 
-        $n = (60 * 60) * 6; // seconde cache
-        $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
-        $this->output->set_header("Cache-Control: post-check=0, pre-check=0");
-        $this->output->set_header("Pragma: no-cache"); 
-        $this->output->cache(0);
+        // $this->load->model('ModelNews');
+        // $data['lists'] = array();
+        // $lists = $this->ModelNews->getLists();
+        // foreach ($lists as $key => $list) {
+        //     $priority = array(1 => 'ด่วน', 'ด่วนมาก', 'ด่วนที่สุด');
+
+        //     $showtime = false;
+        //     $time = time();
+        //     if ($time >= strtotime($list->date_show) && $time <= strtotime($list->date_end)) {
+        //         $showtime = true;
+        //     }
+
+        //     $data['lists'][] = array(
+        //         'id' => $list->id,
+        //         'no' => ++$key,
+        //         'name' => $list->name,
+        //         'type_name' => $list->type_name,
+        //         'priority' => !empty($priority[$list->priority]) ? $priority[$list->priority] : '',
+        //         'file' => !empty($list->file) ? base_url() . '/uploads/' . $list->file : '',
+        //         'showtime' => $showtime,
+        //         'date_show' => $list->date_show,
+        //         'date_end' => $list->date_end,
+        //     );
+        // }
+
+
+        $n = 60; // seconde cache
+        //$this->output->delete_cache();
+
+        // $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
+        // $this->output->set_header("Cache-Control: post-check=0, pre-check=0");
+        // $this->output->set_header("Pragma: no-cache"); 
+        $this->output->cache($n);
 
         $this->load->view('common/header_login', $data);
         $this->load->view('member/login', $data);
