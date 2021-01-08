@@ -43,7 +43,7 @@
                     <div class="alert alert-danger" role="alert"><?php echo $error;?></div>
                     <?php endif; ?>
                     <div id="loginform">
-                        <form class="form-horizontal m-t-20" id="loginform" action="<?php echo $action;?>" method="post">
+                        <form class="form-horizontal m-t-20" id="loginformform" action="<?php echo $action;?>" method="post">
                             <div class="row p-b-30 mb-2">
                                 <div class="col-12 border-top border-bottom border-secondary py-3">
                                     <div class="input-group mb-3">
@@ -109,21 +109,25 @@ jQuery(document).ready(function($) {
         let card = $('[name="id_card"]').val();
         let member_no = $('[name="member_no"]').val();
         let password = $('[name="password"]').val();
+        let messagefail = false;
+        if (card.length == 0) {
+            messagefail=true;
+        }
+        if (member_no.length == 0) {
+            messagefail=true;
+        }
+        if (password.length == 0) {
+            messagefail=true;
+        }
 
-        if (card.length > 0) {
-            toastr.warning('กรุณากรอกข้อมูลให้ครบถ้วน');
-        }
-        if (member_no.length > 0) {
-            toastr.warning('กรุณากรอกข้อมูลให้ครบถ้วน');
-        }
-        if (password.length > 0) {
+        if (messagefail==true) {
             toastr.warning('กรุณากรอกข้อมูลให้ครบถ้วน');
         }
 
         if (card.length > 0 && member_no.length > 0 && password.length > 0) {
-            $('#loginform').submit();
+            $('#loginformform').submit();
+            // console.log('click');
             $('#btn_submit').attr('disabled','disabled');
-            countdownlogin();
         } else {
             $('#btn_submit').attr('disabled','disabled');
             countdownlogin();

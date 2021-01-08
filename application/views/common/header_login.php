@@ -10,13 +10,13 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <!-- Favicon icon -->
-        <link rel="icon" type="image/png" sizes="16x16" href="assets/theme/lib/assets/images/favicon.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="../assets/theme/lib/assets/images/favicon.png">
         <title><?php echo $heading_title; ?></title>
-        <link rel="stylesheet" href="assets/theme/lib/dist/css/style.min.css?v=1001">
-        <link rel="stylesheet" href="assets/theme/lib/dist/css/style.min.css?v=1001">
+        <link rel="stylesheet" href="../assets/theme/lib/dist/css/style.min.css?v=1001">
+        <link rel="stylesheet" href="../assets/theme/lib/dist/css/style.min.css?v=1001">
 
-        <link href="assets/theme/lib/dist/css/icons/font-awesome/css/fontawesome.min.css?v=1001" rel="stylesheet">
-        <link href="assets/theme/lib/dist/css/custom.css?v=1001" rel="stylesheet">
+        <link href="../assets/theme/lib/dist/css/icons/font-awesome/css/fontawesome.min.css?v=1001" rel="stylesheet">
+        <link href="../assets/theme/lib/dist/css/custom.css?v=1001" rel="stylesheet">
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -25,15 +25,15 @@
     <![endif]-->
         <!-- All Jquery -->
         <!-- ============================================================== -->
-        <script type="text/javascript" src="assets/theme/lib/assets/libs/jquery/dist/jquery.min.js?v=1001"></script>
+        <script type="text/javascript" src="../assets/theme/lib/assets/libs/jquery/dist/jquery.min.js?v=1001"></script>
         <!-- Bootstrap tether Core JavaScript -->
-        <script type="text/javascript" src="assets/theme/lib/assets/libs/popper.js/dist/umd/popper.min.js?v=1001"></script>
-        <script type="text/javascript" src="assets/theme/lib/assets/libs/bootstrap/dist/js/bootstrap.min.js?v=1001"></script>
-        <script type="text/javascript" src="assets/theme/lib/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js?v=1001"></script>
-        <script type="text/javascript" src="assets/theme/lib/assets/extra-libs/sparkline/sparkline.js?v=1001"></script>
+        <script type="text/javascript" src="../assets/theme/lib/assets/libs/popper.js/dist/umd/popper.min.js?v=1001"></script>
+        <script type="text/javascript" src="../assets/theme/lib/assets/libs/bootstrap/dist/js/bootstrap.min.js?v=1001"></script>
+        <script type="text/javascript" src="../assets/theme/lib/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js?v=1001"></script>
+        <script type="text/javascript" src="../assets/theme/lib/assets/extra-libs/sparkline/sparkline.js?v=1001"></script>
 
-        <link rel="stylesheet" href="assets/theme/lib/assets/libs/toastr/build/toastr.min.css?v=1001">
-        <script type="text/javascript" src="assets/theme/lib/assets/libs/toastr/toastr.js?v=1001"></script>
+        <link rel="stylesheet" href="../assets/theme/lib/assets/libs/toastr/build/toastr.min.css?v=1001">
+        <script type="text/javascript" src="../assets/theme/lib/assets/libs/toastr/toastr.js?v=1001"></script>
 
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
