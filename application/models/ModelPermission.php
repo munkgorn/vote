@@ -10,6 +10,7 @@ class ModelPermission extends CI_Model {
 
 	public function getPermissions()
 	{
+		$this->db->cache_on();
 		$query = $this->db->get('permission');
 		return $query->result();
 	}

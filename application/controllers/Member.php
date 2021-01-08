@@ -196,9 +196,17 @@ class Member extends CI_Controller
                 'date_end' => $list->date_end,
             );
         }
-        $this->load->view('common/header', $data);
+
+
+        $n = (60 * 60) * 6; // seconde cache
+        $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
+        $this->output->set_header("Cache-Control: post-check=0, pre-check=0");
+        $this->output->set_header("Pragma: no-cache"); 
+        $this->output->cache($n);
+
+        $this->load->view('common/header_login', $data);
         $this->load->view('member/login', $data);
-        $this->load->view('common/footer', $data);
+        $this->load->view('common/footer_login', $data);
     }
 
     public function logout()

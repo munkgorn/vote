@@ -27,7 +27,7 @@
                 <div class="">
                     <div class="row">
                         <div class="col-3 text-center">
-                            <img src="<?php echo $base_url; ?>images/logo/logo.png" class="w-100">
+                            <img src="<?php echo $base_url; ?>images/logo/logo.png" class="w-100" alt="Logo" />
                         </div>
                         <div class="col-9 pt-3">
                             <h4 class="text-white mb-0">การลงคะแนนสรรหาระบบออนไลน์</h4>
@@ -104,9 +104,51 @@
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
+    $('#btn_submit').click(function (e) { 
+        e.preventDefault();
+        let card = $('[name="id_card"]').val();
+        let member_no = $('[name="member_no"]').val();
+        let password = $('[name="password"]').val();
+
+        if (card.length > 0) {
+            toastr.warning('กรุณากรอกข้อมูลให้ครบถ้วน');
+        }
+        if (member_no.length > 0) {
+            toastr.warning('กรุณากรอกข้อมูลให้ครบถ้วน');
+        }
+        if (password.length > 0) {
+            toastr.warning('กรุณากรอกข้อมูลให้ครบถ้วน');
+        }
+
+        if (card.length > 0 && member_no.length > 0 && password.length > 0) {
+            $('#loginform').submit();
+            $('#btn_submit').attr('disabled','disabled');
+            countdownlogin();
+        } else {
+            $('#btn_submit').attr('disabled','disabled');
+            countdownlogin();
+        }
+        
+    });
     <?php if (isset($error) && !empty($error)) { ?>
     toastr.warning('<?php echo $error;?>', 'WRONG!'); 
     <?php } ?>
+    
+    let countdownlogin = () => {
+        let time = 5;
+        let timeid = setInterval(() => {
+            
+            if (time==0) {
+                clearInterval(timeid);
+                $('#btn_submit').removeAttr('disabled');
+                toastr.success('กรุณาเข้าระบบใหม่อีกครั้ง');
+            } else {
+                toastr.info('กรุณารอจะสามารถเข้าระบบได้อีก ภายใน '+time+' วินาที');
+            }
+            
+            time--;
+        }, 1000);
+    };
 });
 </script>
 <script type="text/javascript">

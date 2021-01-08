@@ -43,6 +43,7 @@ class ModelNews extends CI_Model {
 
 	public function getLists() 
 	{	
+		$this->db->cache_on();
 		$this->db->select('news.*, news_type.name as type_name');
 		$this->db->join('news_type', 'news_type.id = news.news_type_id');
 		$this->db->where('news.del', 0);

@@ -13,7 +13,7 @@
         <link rel="icon" type="image/png" sizes="16x16" href="<?php echo $base_url;?>assets/theme/lib/assets/images/favicon.png">
         <title><?php echo $heading_title; ?></title>
         <!-- Custom CSS -->
-        <link href="<?php echo $base_url;?>assets/theme/lib/assets/libs/flot/css/float-chart.css" rel="stylesheet">
+        <link href="<?php echo $base_url;?>assets/theme/lib/assets/libs/flot/css/float-chart.css?v=1001" rel="stylesheet">
         <!-- Custom CSS -->
         <link rel="stylesheet" href="<?php echo $base_url;?>assets/theme/lib/dist/css/style.min.css?v=1001">
         <link rel="stylesheet" type="text/css" href="<?php echo $base_url;?>assets/theme/lib/assets/extra-libs/multicheck/multicheck.css?v=1001">
