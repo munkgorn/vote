@@ -77,8 +77,10 @@ class Member extends CI_Controller
                 foreach ($lists_committee as $list_committee) {
                     $list2[] = $list_committee->committee_name;
                     $list[] = array(
-                        'name' => $list_committee->committee_name,
-                        'type_id' => $list_committee->type_id,
+						'name'      => $list_committee->committee_name, 
+						'id'        => $list_committee->id,
+						'type_id'   => $list_committee->type_id,
+						'receiving' => $list_committee->receiving,
                     );
                 }
                 $json = array(
@@ -105,8 +107,10 @@ class Member extends CI_Controller
                     if ($member->member_group_id == $list_member->type_id) {
                         $list2[] = $list_member->member_group_name;
                         $list[] = array(
-                            'name' => $list_member->member_group_name,
-                            'type_id' => $list_member->type_id,
+							'name'      => $list_member->committee_name, 
+							'id'        => $list_member->id,
+							'type_id'   => $list_member->type_id,
+							'receiving' => $list_member->receiving,
                         );
                     }
                 }
@@ -172,6 +176,7 @@ class Member extends CI_Controller
                 $this->load->model('ModelCandidate');
                 // $recruitings = $this->ModelRecruiting->getLists();
                 $recruitings = json_decode($this->cacheRecruitings()[0]);
+                // echo count($recruitings);
 
                 $data['recruitings'] = array();
                 if (count($recruitings) > 0) {
@@ -263,10 +268,11 @@ class Member extends CI_Controller
                 redirect('Candidate/vote');
             } else {
                 $data['error'] = 'ชื่อผู้ใช้งาน หรือ รหัสผ่าน ผิด';
-                redirect('member/login');
+                // redirect('member/login');
             }
         } else {
-            redirect('member/login');
+            $data['error'] = 'ผิดพลาด';
+            // redirect('member/login');
         }
     }
 
@@ -276,7 +282,7 @@ class Member extends CI_Controller
         // echo md5('898988');
         $data = array();
         $data['heading_title'] = 'เข้าสู่ระบบ';
-        $data['action'] = base_url('member/submitLogin');
+        $data['action'] = base_url('member/login');
         $data['base_url'] = base_url();
         $data['error'] = '';
 
@@ -285,6 +291,7 @@ class Member extends CI_Controller
         $data['error'] = $this->session->has_userdata('error') ? $this->session->error : '';
         $this->session->unset_userdata('error');
 
+        $this->submitLogin();
 
         // $this->load->model('ModelNews');
         // $data['lists'] = array();

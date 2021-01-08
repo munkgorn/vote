@@ -205,8 +205,10 @@ class Candidate extends CI_Controller {
                 foreach ($lists_committee as $list_committee) {
                     $list2[] = $list_committee->committee_name;
                     $list[] = array(
-                        'name' => $list_committee->committee_name,
-                        'type_id' => $list_committee->type_id,
+						'name'      => $list_committee->committee_name, 
+						'id'        => $list_committee->id,
+						'type_id'   => $list_committee->type_id,
+						'receiving' => $list_committee->receiving,
                     );
                 }
                 $json = array(
@@ -233,8 +235,10 @@ class Candidate extends CI_Controller {
                     if ($member->member_group_id == $list_member->type_id) {
                         $list2[] = $list_member->member_group_name;
                         $list[] = array(
-                            'name' => $list_member->member_group_name,
-                            'type_id' => $list_member->type_id,
+							'name'      => $list_member->committee_name, 
+							'id'        => $list_member->id,
+							'type_id'   => $list_member->type_id,
+							'receiving' => $list_member->receiving,
                         );
                     }
                 }
@@ -527,10 +531,12 @@ class Candidate extends CI_Controller {
 			// foreach ($recruitings as $key => $value) {
 				if ($recruiting->recruiting_type == 'committee') {
 					$list = array();
-					$temp = $this->ModelRecruiting->getRecruitingCommittee($recruiting->id);
-					foreach ($temp as $tmp) {
+					$temp = json_decode($this->cacheRecruitingType(1, $recruiting->id)[0]);
+					// $temp = $this->ModelRecruiting->getRecruitingCommittee($recruiting->id);
+					foreach ($temp->list as $tmp) {
+					// foreach ($temp as $tmp) {
 						$lists[] = array(
-							'name'      => $tmp->committee_name, 
+							'name'      => $tmp->name, 
 							'id'        => $tmp->id,
 							'type_id'   => $tmp->type_id,
 							'receiving' => $tmp->receiving,
@@ -539,11 +545,13 @@ class Candidate extends CI_Controller {
 				}
 				if ($recruiting->recruiting_type == 'members') {
 					$list = array();
-					$temp = $this->ModelRecruiting->getRecruitingMemberGroup($recruiting->id);
-					foreach ($temp as $tmp) {
+					$temp = json_decode($this->cacheRecruitingType(2, $recruiting->id)[0]);
+					// $temp = $this->ModelRecruiting->getRecruitingMemberGroup($recruiting->id);
+					foreach ($temp->list as $tmp) {
+					// foreach ($temp as $tmp) {
 						if ($member->member_group_id==$tmp->type_id) {
 							$lists[] = array(
-								'name'      => $tmp->member_group_name, 
+								'name'      => $tmp->name, 
 								'id'        => $tmp->id,
 								'type_id'   => $tmp->member_group_id,
 								'receiving' => $tmp->receiving,
