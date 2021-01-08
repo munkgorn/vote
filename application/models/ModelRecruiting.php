@@ -270,7 +270,7 @@ class ModelRecruiting extends CI_Model {
 
 	public function getLists() 
 	{	
-		$this->db->cache_on();
+		// $this->db->cache_on();
 		$this->db->where('del', 0);
 		$this->db->order_by('id','DESC');
 		$query = $this->db->get('recruiting');
@@ -389,7 +389,7 @@ class ModelRecruiting extends CI_Model {
 
 	public function getRecruitingCommittee($id)
 	{
-		$this->db->cache_on();
+		// $this->db->cache_on();
 		$this->db->select('recruiting_to_committee.*, committee.name as committee_name, committee.id as type_id');
 		$this->db->join('committee', 'committee.id = recruiting_to_committee.committee_id');
 		$this->db->join('recruiting', 'recruiting.id = recruiting_to_committee.recruiting_id');
@@ -402,7 +402,7 @@ class ModelRecruiting extends CI_Model {
 	public function getRecruitingMemberGroup($id)
 	{
 
-		$this->db->cache_on();
+		// $this->db->cache_on();
 		$this->db->select('member_group.id as id , recruiting_to_member_group.*, member_group.name as member_group_name, member_group.id as type_id');
 		$this->db->join('member_group', 'member_group.id = recruiting_to_member_group.member_group_id');
 		$this->db->join('recruiting', 'recruiting.id = recruiting_to_member_group.recruiting_id');

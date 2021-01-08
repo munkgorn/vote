@@ -9,7 +9,7 @@
             <div class="col-md-6">
                 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
-                        <?php foreach ($lists as $key => $value) { ?>
+                        <?php /* foreach ($lists as $key => $value) { ?>
                         <?php if ($value['showtime']==true) { ?>
                         <div class="carousel-item <?php if($key == '0'){ echo "active"; } ?>">
                             <img class="d-block w-100" src="<?php echo $value['file']; ?>" alt="First slide">
@@ -19,7 +19,7 @@
                             </div>
                         </div>
                         <?php } ?>
-                        <?php } ?>
+                        <?php } */ ?>
                     </div>
                 </div>
             </div>

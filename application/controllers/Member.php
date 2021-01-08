@@ -43,6 +43,92 @@ class Member extends CI_Controller
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($json));
+    } 
+
+
+    public function cacheRecruitings() {
+        $json = array();
+        if (!file_exists($this->config->item('base_document') . 'uploads/cache/recruitings.json')) {
+            // load
+            $this->load->model('ModelRecruiting');
+            $json = $this->ModelRecruiting->getLists();
+            $fp = fopen($this->config->item('base_document') . 'uploads/cache/recruitings.json', 'w');
+            fwrite($fp, json_encode($json));
+            fclose($fp);
+        }
+
+        $file_handle = fopen($this->config->item('base_document') . 'uploads/cache/recruitings.json', "r");
+        while (!feof($file_handle)) {
+            $line_of_text = fgets($file_handle);
+            $json[] = $line_of_text;
+        }
+        fclose($file_handle);
+
+        return $json;
+    }
+
+    public function cacheRecruitingType($type=1, $recruiting_id) {
+        $json = array();
+        
+        if ($type==1) { // committee
+            if (!file_exists($this->config->item('base_document') . 'uploads/cache/recruitingsTypeCommittee.json')) {
+                $this->load->model('ModelRecruiting');
+                $lists_committee = $this->ModelRecruiting->getRecruitingCommittee($recruiting_id);
+                foreach ($lists_committee as $list_committee) {
+                    $list2[] = $list_committee->committee_name;
+                    $list[] = array(
+                        'name' => $list_committee->committee_name,
+                        'type_id' => $list_committee->type_id,
+                    );
+                }
+                $json = array(
+                    'list2' => $list2,
+                    'list' => $list
+                );
+                $fp = fopen($this->config->item('base_document') . 'uploads/cache/recruitingsTypeCommittee.json', 'w');
+                fwrite($fp, json_encode($json));
+                fclose($fp);
+                
+            }
+
+            $file_handle = fopen($this->config->item('base_document') . 'uploads/cache/recruitingsTypeCommittee.json', "r");
+            while (!feof($file_handle)) {
+                $line_of_text = fgets($file_handle);
+                $json[] = $line_of_text;
+            }
+            fclose($file_handle);
+        } else if ($type==2) { // member group
+            if (!file_exists($this->config->item('base_document') . 'uploads/cache/recruitingsTypeMemberGroup.json')) {
+                $this->load->model('ModelRecruiting');
+                $lists_members = $this->ModelRecruiting->getRecruitingMemberGroup($recruiting_id);
+                foreach ($lists_members as $list_member) {
+                    if ($member->member_group_id == $list_member->type_id) {
+                        $list2[] = $list_member->member_group_name;
+                        $list[] = array(
+                            'name' => $list_member->member_group_name,
+                            'type_id' => $list_member->type_id,
+                        );
+                    }
+                }
+                $json = array(
+                    'list2' => $list2,
+                    'list' => $list
+                );
+                $fp = fopen($this->config->item('base_document') . 'uploads/cache/recruitingsTypeMemberGroup.json', 'w');
+                fwrite($fp, json_encode($json));
+                fclose($fp);
+                
+            }
+
+            $file_handle = fopen($this->config->item('base_document') . 'uploads/cache/recruitingsTypeMemberGroup.json', "r");
+            while (!feof($file_handle)) {
+                $line_of_text = fgets($file_handle);
+                $json[] = $line_of_text;
+            }
+            fclose($file_handle);
+        }
+        
+        return $json;
     }
 
     public function submitLogin() {
@@ -84,7 +170,8 @@ class Member extends CI_Controller
                 $this->load->model('ModelRecruiting');
                 $this->load->model('ModelScore');
                 $this->load->model('ModelCandidate');
-                $recruitings = $this->ModelRecruiting->getLists();
+                // $recruitings = $this->ModelRecruiting->getLists();
+                $recruitings = json_decode($this->cacheRecruitings()[0]);
 
                 $data['recruitings'] = array();
                 if (count($recruitings) > 0) {
@@ -93,28 +180,35 @@ class Member extends CI_Controller
                         $list = array();
                         $list2 = array();
                         if ($value->recruiting_type == 'committee') {
-                            $lists_committee = $this->ModelRecruiting->getRecruitingCommittee($value->id);
-                            foreach ($lists_committee as $list_committee) {
-                                $list2[] = $list_committee->committee_name;
-                                $list[] = array(
-                                    'name' => $list_committee->committee_name,
-                                    'type_id' => $list_committee->type_id,
-                                );
-                            }
+                            $temp = json_decode($this->cacheRecruitingType(1, $value->id)[0]);
+                            $list2 = $temp->list2;
+                            $list = $temp->list;
+
+                            // $lists_committee = $this->ModelRecruiting->getRecruitingCommittee($value->id);
+                            // foreach ($lists_committee as $list_committee) {
+                            //     $list2[] = $list_committee->committee_name;
+                            //     $list[] = array(
+                            //         'name' => $list_committee->committee_name,
+                            //         'type_id' => $list_committee->type_id,
+                            //     );
+                            // }
                         }
                         if ($value->recruiting_type == 'members') {
-                            $lists_members = $this->ModelRecruiting->getRecruitingMemberGroup($value->id);
-                            foreach ($lists_members as $list_member) {
-                                // echo $member->member_group_id.' '.$list_member->type_id;
-                                // echo '<br>';
-                                if ($member->member_group_id == $list_member->type_id) {
-                                    $list2[] = $list_member->member_group_name;
-                                    $list[] = array(
-                                        'name' => $list_member->member_group_name,
-                                        'type_id' => $list_member->type_id,
-                                    );
-                                }
-                            }
+                            $temp = json_decode($this->cacheRecruitingType(2, $value->id)[0]);
+                            $list2 = $temp->list2;
+                            $list = $temp->list;
+                            // $lists_members = $this->ModelRecruiting->getRecruitingMemberGroup($value->id);
+                            // foreach ($lists_members as $list_member) {
+                            //     // echo $member->member_group_id.' '.$list_member->type_id;
+                            //     // echo '<br>';
+                            //     if ($member->member_group_id == $list_member->type_id) {
+                            //         $list2[] = $list_member->member_group_name;
+                            //         $list[] = array(
+                            //             'name' => $list_member->member_group_name,
+                            //             'type_id' => $list_member->type_id,
+                            //         );
+                            //     }
+                            // }
                         }
 
                         $status = false;
@@ -156,7 +250,10 @@ class Member extends CI_Controller
                 redirect('Candidate/vote');
             } else {
                 $data['error'] = 'ชื่อผู้ใช้งาน หรือ รหัสผ่าน ผิด';
+                redirect('member/login');
             }
+        } else {
+            redirect('member/login');
         }
     }
 
